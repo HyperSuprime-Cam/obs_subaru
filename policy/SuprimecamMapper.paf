@@ -8,7 +8,21 @@ needCalibRegistry: true
 
 camera:     "../suprimecam/Full_Suprimecam_geom.paf"
 defects:    "../suprimecam/defects"
-defaultLevel: "Ccd"
+
+levels: {
+    # Keys that are NOT relevant for a particular level
+    skyTile: "visit" "ccd"
+    tract: "patch"
+    visit: "ccd"
+    sensor: "none"
+}
+defaultLevel: "sensor"
+defaultSubLevels: {
+    # Default sublevel for dataRef.subItems()
+    skyTile: "sensor"
+    visit: "sensor"
+    sensor: "none"
+}
 
 exposures: {
     raw: {
@@ -199,49 +213,40 @@ exposures: {
 
 calibrations: {
     bias: {
-        template:    "BIAS/%(calibDate)s/%(filter)s/%(mystery)s/BIAS-%(num)07d%(ccd)1d.fits"
+        template:    "BIAS/%(calibDate)s/NONE/%(calibVersion)s/BIAS-%(ccd)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
         level:        "Ccd"
         tables:     "bias"
         columns: "ccd"
+        columns: "taiObs"
         reference:   "raw_visit"
         refCols:     "visit"
         refCols:     "filter"
+        validRange:  true
+        validStartName: validStart
+        validEndName: validEnd
     }
     dark: {
-        template:    "DARK/%(calibDate)s/%(filter)s/%(mystery)s/DARK-%(num)07d%(ccd)1d.fits"
+        template:    "DARK/%(calibDate)s/NONE/%(calibVersion)s/DARK-%(ccd)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
         level:        "Ccd"
         tables:     "dark"
         columns: "ccd"
-        reference:   "raw_visit"
-        refCols:     "visit"
-        refCols:     "filter"
-    }
-    bgflat: {
-        template:    "BGFLAT/%(calibDate)s/%(filter)s/%(mystery)s/BGFLAT-%(num)07d%(ccd)1d.fits"
-        python:        "lsst.afw.image.ExposureF"
-        persistable:        "ExposureF"
-        storage:    "FitsStorage"
-        level:        "Ccd"
-        tables:     "bgflat"
-        columns: "ccd"
-        columns: "filter"
         columns: "taiObs"
         reference:   "raw_visit"
         refCols:     "visit"
         refCols:     "filter"
-        filter:      true
         validRange:  true
         validStartName: validStart
         validEndName: validEnd
+
     }
     flat: {
-        template:    "FLAT/%(calibDate)s/%(filter)s/%(mystery)s/FLAT-%(num)07d%(ccd)1d.fits"
+        template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-%(ccd)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
@@ -259,7 +264,7 @@ calibrations: {
         validEndName: validEnd
     }
     fringe: {
-        template:    "FRINGE/%(calibDate)s/%(filter)s/%(mystery)s/FRINGE-%(num)07d%(ccd)1d.fits"
+        template:    "FRINGE/%(calibDate)s/%(filter)s/%(calibVersion)s/FRINGE-%(ccd)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
