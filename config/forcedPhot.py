@@ -17,6 +17,9 @@ root.measurement.algorithms.names |= ["flux.sinc2"]
 root.measurement.algorithms.names |= ["centroid.record"]
 root.measurement.slots.centroid = "centroid.record"
 
+# Don't update celestial coordinates from centroid.
+root.measurement.algorithms.names -= ["skycoord"]
+
 # Copy deblending flags
 root.copyColumns["deblend.nchild"] = "deblend.nchild"
 root.copyColumns["parent"] = "parentObjectId"
