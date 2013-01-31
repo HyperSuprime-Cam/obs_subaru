@@ -539,6 +539,22 @@ datasets: {
         tables:        raw
         tables:        raw_visit
     }
+    forcedPhot_config: {
+        template:      "%(pointing)05d/%(filter)s/forcedPhot_config/%(visit)07d%(ccd)1d.py"
+        python:        "lsst.pipe.tasks.processCcd.ProcessCcdConfig"
+        persistable:      "Config"
+        storage:    "ConfigStorage"
+        tables:        raw
+        tables:        raw_visit
+    }
+    forcedPhot_metadata: {
+        template:      "%(pointing)05d/%(filter)s/forcedPhot_metadata/%(visit)07d%(ccd)1d.boost"
+        python:        "lsst.daf.base.PropertySet"
+        persistable:        "PropertySet"
+        storage:    "BoostStorage"
+        tables:        raw
+        tables:        raw_visit
+    }
 
     forcedsources: {
         template:      "%(pointing)05d/%(filter)s/output/FORCED%(visit)07d%(ccd)1d.fits"
