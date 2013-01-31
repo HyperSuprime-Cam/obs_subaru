@@ -13,17 +13,6 @@ AlgorithmRegistry.register("flux.sinc2", target=SincFluxConfig.Control, ConfigCl
 root.measurement.algorithms["flux.sinc2"].radius = 5.0
 root.measurement.algorithms.names |= ["flux.sinc2"]
 
-# Set centroid from the reference source.
-root.measurement.algorithms.names |= ["centroid.record"]
-root.measurement.slots.centroid = "centroid.record"
-
-# Don't update celestial coordinates from centroid.
-root.measurement.algorithms.names -= ["skycoord"]
-
-# Copy deblending flags
-root.copyColumns["deblend.nchild"] = "deblend.nchild"
-root.copyColumns["parent"] = "parentObjectId"
-
 # Enable model mags
 try:
     import lsst.meas.extensions.multiShapelet
