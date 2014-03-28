@@ -5,6 +5,7 @@ import numpy as np
 import lsst.afw.geom as afwGeom
 import lsst.afw.image as afwImage
 import lsst.afw.cameraGeom as afwCG
+import lsst.afw.cameraGeom.utils as afwCGUtils
 import lsst.daf.persistence as dafPersist
 import lsst.obs.hscSim as hscSim
 try:
@@ -19,26 +20,34 @@ except NameError:
 def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alpha=0.2,
          byFilter=False, byVisit=False, title="", verbose=False):
     camera = butler.get("camera")
+    ccdId = 49                          # the CCD we use to determine the boresight
+    ccd = afwCGUtils.findCcd(camera, ccdId)
 
     ra, dec = [], []
     filters = {}
     _visits = visits; visits = []
     for v in _visits:
+        if verbose:
+            print v, fields[v]
+
         try:
-            exp = butler.get("raw", visit=v, ccd=49)
+            md = butler.get("raw_md", visit=v, ccd=ccdId)
         except RuntimeError, e:
             if verbose:
                 print >> sys.stderr, e
             continue
 
-        ccd = afwCG.cast_Ccd(exp.getDetector())
+        wcs = afwImage.makeWcs(md)
 
         xy = ccd.getPixelFromPosition(afwCG.FpPoint(0,0))
-        sky = exp.getWcs().pixelToSky(xy)
+        sky = wcs.pixelToSky(xy)
         visits.append(v)
         ra.append( sky[0].asDegrees())
         dec.append(sky[1].asDegrees())
-        filters[v] = exp.getFilter().getName()
+        filt = afwImage.Filter(md.get("FILTER01").upper())
+        if True:                        # workaround ticket #2113
+            filt = afwImage.Filter(filt.getId())
+        filters[v] = filt.getName()
 
     plt.clf()
     if aitoff:
@@ -242,10 +251,6 @@ E.g.
     fields = dict([(v, f) for v, f in fields.items() if v in visits])
     visits = sorted(fields.keys())
 
-    if args.verbose:
-        for v in visits:
-            print v, fields[v]
-
     fig = main(butler, visits, fields, args.fieldRadius, byFilter=args.byFilter, byVisit=args.byVisit,
                showCCDs=args.showCCDs, aitoff=args.aitoff, alpha=args.alpha, title="",
                verbose=args.verbose)
@@ -257,4 +262,5 @@ E.g.
         plt.savefig(args.fileName)
     else:
         plt.interactive(1)
+        print "\r" + 100*" " + "\r",; sys.stdout.flush()
         raw_input("Exit? ")
