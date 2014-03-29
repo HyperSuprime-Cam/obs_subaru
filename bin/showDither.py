@@ -140,6 +140,7 @@ def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alph
 
     plt.xlabel("ra")
     plt.ylabel("dec")
+    plt.title(title)
 
     return plt
 
