@@ -38,11 +38,13 @@ colortermsData = dict(
     )
 
 def setFromAstrometryNetData(verbose=False):
+    import eups
     try:
-        import eups
-        andCatVersion = eups.getSetupVersion("astrometry_net_data")
-        if andCatVersion is None:
+        try:
+            andCatVersion = eups.getSetupVersion("astrometry_net_data")
+        except eups.exceptions.ProductNotFound:
             raise ValueError("astrometry_net_data is not setup")
+
         if andCatVersion.lower().startswith("sdss"):
             if verbose:
                 print "Setting color terms from SDSS"
@@ -55,7 +57,7 @@ def setFromAstrometryNetData(verbose=False):
             raise ValueError("astrometry_net_data version not recognized")
     except Exception as err:
         if verbose:
-            print "%s: falling back to generic Hamamatsu color terms" % err
+            print "%s: falling back to generic (suprimeCam) Hamamatsu color terms" % err
         Colorterm.setActiveDevice("Hamamatsu")
 
 if __name__ == "__main__":
