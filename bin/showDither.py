@@ -18,7 +18,7 @@ except NameError:
     plt.interactive(1)
 
 def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alpha=0.2,
-         byFilter=False, byVisit=False, title="", verbose=False):
+         panels=None, byFilter=False, byVisit=False, title="", verbose=False):
     camera = butler.get("camera")
     ccdId = 49                          # the CCD we use to determine the boresight
     ccd = afwCGUtils.findCcd(camera, ccdId)
@@ -54,8 +54,27 @@ def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alph
         axes = plt.gcf().add_axes((0.1, 0.1, 0.85, 0.80), projection="aitoff")
         axes.grid(1)
     else:
-        axes = plt.gca()
-        axes.set_aspect('equal') 
+        axes = {}
+        if panels and byFilter:
+            filterSet = sorted(list(set(filters.values())))
+            if panels == "best":
+                nx = int(np.sqrt(len(filterSet)))
+                ny = len(filterSet)//nx
+                while nx*ny < len(filterSet):
+                    nx += 1
+            elif panels == "x":
+                nx, ny = 1, len(filterSet)
+            elif panels == "y":
+                nx, ny = len(filterSet), 1
+            else:
+                raise RuntimeError("Impossible value of panels: %s" % panels)
+                
+            for i, f in enumerate(filterSet):
+                axes[f] = plt.subplot(nx, ny, i+1)
+                axes[f].set_aspect('equal') 
+        else:
+            axes[None] = plt.gca()
+            axes[None].set_aspect('equal') 
 
     ctypes = dict(BIAS="orange",
                   DARK="cyan",
@@ -95,7 +114,11 @@ def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alph
         
         circ = Circle(xy=(r, d), radius=fieldRadius, fill=False if showCCDs else True,
                       facecolor=facecolor, alpha=alpha)
-        axes.add_artist(circ)
+
+        if panels and byFilter:
+            axes[filters[v]].add_artist(circ)
+        else:
+            axes[None].add_artist(circ)
 
         if showCCDs:
             pathCodes = [Path.MOVETO, Path.LINETO, Path.LINETO, Path.LINETO, Path.CLOSEPOLY,]
@@ -117,7 +140,7 @@ def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alph
                     verts.append([sky[0].asDegrees(), sky[1].asDegrees()])
                 verts.append((0, 0))    # dummy
 
-                axes.add_patch(PathPatch(Path(verts, pathCodes), alpha=alpha, facecolor=facecolor))
+                axes[None].add_patch(PathPatch(Path(verts, pathCodes), alpha=alpha, facecolor=facecolor))
 
         if byFilter:
             key = filters[v]
@@ -127,20 +150,25 @@ def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alph
         if not labels.count(key):
             plots.append(Circle((0,0), facecolor=facecolor)); labels.append(key)
 
-    plt.legend(plots, labels,
-               loc='best', bbox_to_anchor=(0, 1.02, 1, 0.102)).draggable()
+    if not panels:
+        plt.legend(plots, labels, loc='best', bbox_to_anchor=(0, 1.02, 1, 0.102)).draggable()
 
     if not aitoff:
         raRange = np.max(ra)   - np.min(ra)  + 1.2*fieldRadius
         decRange = np.max(dec) - np.min(dec) + 1.2*fieldRadius
         raRange *= np.cos(np.radians(np.mean(dec)))
-        
-        plt.xlim(0.5*(np.max(ra)  + np.min(ra))  +  raRange*np.array((1, -1)))
-        plt.ylim(0.5*(np.max(dec) + np.min(dec)) + decRange*np.array((-1, 1)))
 
-    plt.xlabel("ra")
-    plt.ylabel("dec")
-    plt.title(title)
+        for a in axes.values():
+            a.set_xlim(0.5*(np.max(ra)  + np.min(ra))  +  raRange*np.array((1, -1)))
+            a.set_ylim(0.5*(np.max(dec) + np.min(dec)) + decRange*np.array((-1, 1)))
+ 
+    for k, a in axes.items():
+        a.set_xlabel("ra")
+        a.set_ylabel("dec")
+        if panels:
+            a.text(0.1, 0.9, k, transform=a.transAxes)
+
+    plt.suptitle(title)
 
     return plt
 
@@ -162,6 +190,7 @@ E.g.
                         help='Exclude these types of  field (e.g. BIAS DARK *FOCUS*)')
     parser.add_argument('--dateObs', type=str, nargs="*", help='Desired date[s] (e.g. 2013-06-15 2013-06-16)')
     parser.add_argument('--fileName', type=str, help='File to save plot to')
+    parser.add_argument('--title', type=str, help='Title for plot', default="")
     parser.add_argument('--alpha', type=float, help='Transparency of observed regions', default=0.2)
     parser.add_argument('--fieldRadius', type=float, help='Radius of usable field (degrees)', default=0.75)
     parser.add_argument('--showCCDs', action="store_true",
@@ -170,6 +199,8 @@ E.g.
                         help="Colour pointings by their filter", default=False)
     parser.add_argument('--byVisit', action="store_true",
                         help="Colour pointings by their visit", default=False)
+    parser.add_argument('--panels', type=str, choices=['best', 'x', 'y'],
+                        help="Make separate panels for each type of plot (e.g. filter) stacked in x or y", default=False)
     parser.add_argument('--aitoff', action="store_true", help="Use an Aitoff projection", default=False)
     parser.add_argument('--verbose', action="store_true", help="Be chatty", default=False)
     
@@ -253,8 +284,8 @@ E.g.
     visits = sorted(fields.keys())
 
     fig = main(butler, visits, fields, args.fieldRadius, byFilter=args.byFilter, byVisit=args.byVisit,
-               showCCDs=args.showCCDs, aitoff=args.aitoff, alpha=args.alpha, title="",
-               verbose=args.verbose)
+               showCCDs=args.showCCDs, aitoff=args.aitoff, alpha=args.alpha,
+               panels=args.panels, title=args.title, verbose=args.verbose)
 
     if args.verbose:
         print "                          \r",; sys.stdout.flush()
