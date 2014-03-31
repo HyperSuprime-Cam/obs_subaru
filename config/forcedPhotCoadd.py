@@ -18,10 +18,9 @@ try:
 except ImportError:
     print "Unable to import lsst.meas.extensions.photometryKron: Kron fluxes disabled"
 
+# Enable CModel mags (unsetup meas_multifit or use $MEAS_MULTIFIT_DIR/config/disable.py to disable)
+import os
 try:
-    import lsst.meas.extensions.multiShapelet
-    root.measurement.algorithms.names |= lsst.meas.extensions.multiShapelet.algorithms
-    root.measurement.slots.modelFlux = "multishapelet.combo.flux"
-except ImportError:
-    print "meas_extensions_multiShapelet is not setup; disabling model mags"
-
+    root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable.py'))
+except KeyError, ImportError:
+    print "Cannot import lsst.meas.multifit: disabling CModel measurements"

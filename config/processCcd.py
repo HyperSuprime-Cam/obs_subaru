@@ -66,3 +66,10 @@ root.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
 root.measurement.doReplaceWithNoise = True
 root.doDeblend = True
 root.deblend.maxNumberOfPeaks = 20
+
+# Enable CModel mags (unsetup meas_multifit or use $MEAS_MULTIFIT_DIR/config/disable.py to disable)
+import os
+try:
+    root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable.py'))
+except KeyError, ImportError:
+    print "Cannot import lsst.meas.multifit: disabling CModel measurements"
