@@ -3,6 +3,8 @@
 import os
 import numpy
 
+from contextlib import contextmanager
+
 from lsst.pex.config import Field
 from lsst.pipe.base import Task, Struct
 from lsst.ip.isr import IsrTask
@@ -201,8 +203,6 @@ class SubaruIsrTask(IsrTask):
         # Not a good mechanism for switching on transposition, but it gets the job done
         self.transposeForInterpolation = True if ccd.getOrientation().getNQuarter() % 2 else False
 
-        self.maskAndInterpDefect(ccdExposure)
-
         if self.config.qa.doWriteOss:
             sensorRef.put(ccdExposure, "ossImage")
         if self.config.qa.doThumbnailOss:
@@ -213,11 +213,16 @@ class SubaruIsrTask(IsrTask):
         if self.config.doLinearize:
             self.linearize(ccdExposure)
         if self.config.doCrosstalk:
-            self.crosstalk.run(ccdExposure)
+            with self.rotated(ccdExposure) as exp:
+                self.crosstalk.run(exp)
         if self.config.doDark:
             self.darkCorrection(ccdExposure, sensorRef)
+
         if self.config.doFlat:
             self.flatCorrection(ccdExposure, sensorRef)
+
+        self.maskAndInterpDefect(ccdExposure)
+
         if self.config.doApplyGains:
             self.applyGains(ccdExposure, self.config.normalizeGains)
         if self.config.doWidenSaturationTrails:
@@ -250,6 +255,17 @@ class SubaruIsrTask(IsrTask):
         self.display("postISRCCD", ccdExposure)
 
         return Struct(exposure=ccdExposure)
+
+    @contextmanager
+    def rotated(self, exp):
+        nQuarter = exp.getDetector().getOrientation().getNQuarter()
+        if nQuarter % 2:
+            exp.setMaskedImage(afwMath.rotateImageBy90(exp.getMaskedImage(), 4 - nQuarter))
+        try:
+            yield exp
+        finally:
+            if nQuarter % 2:
+                exp.setMaskedImage(afwMath.rotateImageBy90(exp.getMaskedImage(), nQuarter))
 
     def applyGains(self, ccdExposure, normalizeGains):
         ccd = afwCG.cast_Ccd(ccdExposure.getDetector())
@@ -323,16 +339,18 @@ class SubaruIsrTask(IsrTask):
         mi = exposure.getMaskedImage()
         mask = mi.getMask()
         BAD = mask.getPlaneBitMask("BAD")
-        fs = afwDetection.FootprintSet(mask, afwDetection.createThreshold(BAD, "bitmask"))
+        INTRP = mask.getPlaneBitMask("INTRP")
 
         sctrl = afwMath.StatisticsControl()
         sctrl.setAndMask(BAD)
         value = afwMath.makeStatistics(mi, statistic, sctrl).getValue()
 
-        afwDetection.setImageFromFootprintList(mi.getImage(), fs.getFootprints(), value)
+        maskArray = mask.getArray()
+        imageArray = mi.getImage().getArray()
+        badPixels = numpy.logical_and((maskArray & BAD) > 0, (maskArray & INTRP) == 0)
+        imageArray[:] = numpy.where(badPixels, value, imageArray)
 
-        self.log.log(self.log.INFO, "Set %d BAD pixels to %.2f" %
-                     (sum([f.getNpix() for f in fs.getFootprints()]), value))
+        self.log.info("Set %d BAD pixels to %.2f" % (badPixels.sum(), value))
 
     def writeThumbnail(self, dataRef, dataset, exposure, format='png', width=500, height=0):
         """Write out exposure to a snapshot file named outfile in the given image format and size.
