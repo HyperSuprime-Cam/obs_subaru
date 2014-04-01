@@ -198,6 +198,9 @@ class SubaruIsrTask(IsrTask):
         ccdExposure = self.assembleCcd.assembleCcd(ccdExposure)
         ccd = afwCG.cast_Ccd(ccdExposure.getDetector())
 
+        # Not a good mechanism for switching on transposition, but it gets the job done
+        self.transposeForInterpolation = True if ccd.getOrientation().getNQuarter() % 2 else False
+
         self.maskAndInterpDefect(ccdExposure)
 
         if self.config.qa.doWriteOss:
