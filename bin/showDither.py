@@ -21,7 +21,7 @@ def main(butler, visits, fields, fieldRadius, showCCDs=False, aitoff=False, alph
          panels=None, byFilter=False, byVisit=False, title="", verbose=False):
     camera = butler.get("camera")
     ccdId = 49                          # the CCD we use to determine the boresight
-    ccd = afwCGUtils.findCcd(camera, ccdId)
+    ccd = afwCGUtils.findCcd(camera, afwCG.Id(ccdId))
 
     ra, dec = [], []
     filters = {}
