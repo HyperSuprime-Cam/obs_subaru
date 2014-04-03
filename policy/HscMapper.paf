@@ -100,7 +100,6 @@ exposures: {
         level:        "Ccd"
         tables:        "raw"
         tables:        "raw_visit"
-        tables:        "raw_skyTile"
     }
 
     fcr: {
@@ -111,7 +110,6 @@ exposures: {
         level:        "Ccd"
         tables:        "raw"
         tables:        "raw_visit"
-        tables:        "raw_skyTile"
     }
     detj: {
         template:      "%(pointing)05d/%(filter)s/corr/DETJ-%(visit)07d-%(ccd)03d.fits"
