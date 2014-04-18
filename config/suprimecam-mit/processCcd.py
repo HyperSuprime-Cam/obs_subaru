@@ -4,6 +4,7 @@ SuprimeCam (MIT)-specific overrides for ProcessCcdTask
 """
 import os
 root.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'suprimecam-mit', 'isr.py'))
-root.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'suprimecam-mit', 'colorterms.py'))
+root.calibrate.photocal.colorterms.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'suprimecam-mit',
+                                                     'colorterms.py'))
 
 root.measurement.algorithms["jacobian"].pixelScale = 0.2
