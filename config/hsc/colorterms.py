@@ -14,7 +14,7 @@ root.library = {
         {'g': ColortermConfig.fromValues("g", "r",  0.00730066,  0.06508481, -0.01510570),
          'r': ColortermConfig.fromValues("r", "i",  0.00279757,  0.02093734, -0.01877566),
          'i': ColortermConfig.fromValues("i", "z",  0.00166891, -0.13944659, -0.03034094),
-         'z': ColortermConfig.fromValues("z", "i", -0.00907517, -0.28840221, -0.00316369),
-         'y': ColortermConfig.fromValues("z", "i", -0.00156858,  0.14747401,  0.02880125),
+         'z': ColortermConfig.fromValues("z", "y", -0.00907517, -0.28840221, -0.00316369),
+         'y': ColortermConfig.fromValues("y", "z", -0.00156858,  0.14747401,  0.02880125),
          }),
 }
