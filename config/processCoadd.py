@@ -24,3 +24,10 @@ try:
     root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable.py'))
 except KeyError, ImportError:
     print "Cannot import lsst.meas.multifit: disabling CModel measurements"
+
+# Enable HSM Regaussianization shear measurement (unsetup meas_extensions_shapeHSM to disable)
+try:
+    import lsst.meas.extensions.shapeHSM
+    root.measurement.algorithms.names |= ["shape.hsm.regauss"]
+except ImportError:
+    print "Cannot import lsst.meas.extensions.shapeHSM: disabling shear measurement"
