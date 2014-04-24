@@ -4,7 +4,7 @@ HSC-specific overrides for ProcessCoaddTask
 """
 
 import os
-root.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsc', 'colorterms.py'))
+root.calibrate.photocal.colorterms.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsc', 'colorterms.py'))
 
 bgSize = 4096
 bgUndersample = 'REDUCE_INTERP_ORDER'
