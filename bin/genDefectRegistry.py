@@ -47,7 +47,7 @@ for f in glob.glob(os.path.join(args.root, "*", "defects*.fits")):
     if args.verbose:
         print "Registering %s" % f
     # New defects should not affect old data
-    startDate = m.group(1).split('/')[2]
+    startDate = m.group(1).split('/')[-1]
     conn.execute(cmd, (f, m.group(1), int(m.group(2)), startDate, "2037-12-31"))
 conn.commit()
 conn.close()

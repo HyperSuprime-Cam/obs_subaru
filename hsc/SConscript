@@ -13,9 +13,11 @@ env.Append(**environ)
 python = "PYTHONPATH=%s " % environ["PYTHONPATH"]
 
 defectsDatList = glob.glob("defects/*/defects.dat")
+commandList = list()
 for defectsDat in defectsDatList:
     command = "%s bin/genDefectFits.py hsc/hsc_geom.paf %s --force" % (python, os.path.join("hsc", defectsDat))
-    env.AlwaysBuild(env.Command('defectsFits', [], command))
+    commandList.append(command)
+env.AlwaysBuild(env.Command('defectsFits', [], commandList))
 
 command = "%s bin/genDefectRegistry.py --root hsc/defects" % (python)
 registry = env.AlwaysBuild(env.Command("defects/defectRegistry.sqlite3", "defectsFits", command))
