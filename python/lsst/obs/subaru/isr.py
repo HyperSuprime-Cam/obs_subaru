@@ -69,7 +69,7 @@ class SubaruIsrConfig(IsrTask.ConfigClass):
                                               dtype=bool, default=True)
     doOverscan = pexConfig.Field(doc="Do overscan subtraction?", dtype=bool, default=True)
     doVariance = pexConfig.Field(doc="Calculate variance?", dtype=bool, default=True)
-    doDefect = pexConfig.Field(doc="Mask defect pixels?", dtype=bool, default=False)
+    doDefect = pexConfig.Field(doc="Mask defect pixels?", dtype=bool, default=True)
     doGuider = pexConfig.Field(
         dtype = bool,
         doc = "Trim guider shadow",
@@ -221,7 +221,8 @@ class SubaruIsrTask(IsrTask):
         if self.config.doFlat:
             self.flatCorrection(ccdExposure, sensorRef)
 
-        self.maskAndInterpDefect(ccdExposure)
+        if self.config.doDefect:
+            self.maskAndInterpDefect(ccdExposure)
 
         if self.config.doApplyGains:
             self.applyGains(ccdExposure, self.config.normalizeGains)
@@ -229,8 +230,6 @@ class SubaruIsrTask(IsrTask):
             self.widenSaturationTrails(ccdExposure.getMaskedImage().getMask())
         if self.config.doSaturation:
             self.saturationInterpolation(ccdExposure)
-        if self.config.doDefect:
-            self.maskDefect(ccdExposure, self.config.fwhmForBadColumnInterpolation)
 
         if self.config.doFringe:
             self.fringe.run(ccdExposure, sensorRef)
