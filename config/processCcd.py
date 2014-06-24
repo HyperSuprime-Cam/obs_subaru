@@ -66,16 +66,6 @@ except ImportError:
 
 root.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
 
-# Enable CModel mags in calibrate.measurement only (these are needed to apply aperture corrections to CModel
-# fluxes measured from the coadd).
-# Unsetup meas_multifit or use $MEAS_MULTIFIT_DIR/config/disable-calibrate.py to disable.
-# Use $MEAS_MULTIFIT_DIR/config/enable.py to additionally enable CModel fluxes in the main measurement stage.
-import os
-try:
-    root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable-calibrate.py'))
-except KeyError, ImportError:
-    print "Cannot import lsst.meas.multifit: disabling CModel calibrate measurements"
-
 # Enable deblender for processCcd
 root.measurement.doReplaceWithNoise = True
 root.doDeblend = True
