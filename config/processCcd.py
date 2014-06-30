@@ -58,8 +58,6 @@ root.measurement.algorithms["flux.aperture"].radii = [3.0, 4.5, 6.0, 9.0, 12.0, 
 
 # Use a large aperture to be independent of seeing in calibration
 root.calibrate.measurement.algorithms["flux.sinc"].radius = 12.0
-
-# Use a large aperture to be independent of seeing in calibration
 root.measurement.algorithms["flux.sinc"].radius = 12.0
 
 try:
