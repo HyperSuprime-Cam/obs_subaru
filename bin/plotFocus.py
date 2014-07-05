@@ -17,6 +17,8 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
                         help="Plot the focus error not the focus position", default=False)
     parser.add_argument('--noFwhm', action="store_true",
                         help="Don't include the FWHM panel", default=False)
+    parser.add_argument('--correctFwhmForFocusError', action="store_true",
+                        help="Correct measured FWHM for focus error", default=False)
     parser.add_argument('--out', '-o', help="Output file")
     parser.add_argument('--dpi', type=int, help="Dots per inch for output file")
     args = parser.parse_args()
@@ -72,7 +74,16 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
         ax1 = pyplot.subplot2grid((3, 1), (0, 0), sharex=ax0)
         axes.append(ax1)
 
-        ax1.plot(visit, fwhm)
+        ax1.plot(visit, fwhm, '.', label="measured")
+        if args.correctFwhmForFocusError:
+            # rms^2 = rms_*^2 + alpha*focus^2  where rms is in arcsec and focus in mm
+            alpha = 4.2e-2              # rms and focus in mm from zemacs;  ../hsc/zemax_config?_0.0.dat
+            alpha *= (0.168/0.015)**2   # convert to arcsec^2
+            alpha *= 8*numpy.log(2)     # convert rms^2 to fwhm^2 for a Gaussian
+            
+            alpha *= 0.5                # works better empirically!
+            ax1.plot(visit, numpy.sqrt(fwhm**2 - alpha*focus**2), '.', label="corrected")
+            ax1.legend(loc='best')
         ax1.set_ylabel("FWHM (arcsec)")
 
     for ax in axes:
