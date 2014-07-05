@@ -102,8 +102,9 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     if args.out:
         pyplot.savefig(args.out, dpi=args.dpi)
     else:
+        pyplot.interactive(True)
         pyplot.show()
-
+        raw_input("Hit any key to exit ")
 
 if __name__ == '__main__':
     main()
