@@ -86,17 +86,19 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
             ax1.legend(loc='best')
         ax1.set_ylabel("FWHM (arcsec)")
 
+    x0, x1 = min(visit), max(visit)
     for ax in axes:
         for v in focusSweepVisits:
             ax.axvline(v, color='red')
 
+        ax.set_xticks(range(10*int(0.1*x0), int(10*int(0.1*x1)), 5), minor=True)
+        ax.set_xlim(x0 - 0.05*(x1 - x0), x1 + 0.05*(x1 - x0)) 
         ax.grid()
 
     ax0.set_xlabel("visit")
 
     pyplot.title("Rerun %s" % args.rerun)
-    pyplot.gca().set_xticks(range(int(min(visit)), int(max(visit)), 10), minor=True)
-
+    
     if args.out:
         pyplot.savefig(args.out, dpi=args.dpi)
     else:
