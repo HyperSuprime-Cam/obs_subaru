@@ -78,10 +78,11 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
         if args.correctFwhmForFocusError:
             # rms^2 = rms_*^2 + alpha*focus^2  where rms is in arcsec and focus in mm
             alpha = 4.2e-2              # rms and focus in mm from zemacs;  ../hsc/zemax_config?_0.0.dat
+            alpha /= 1.6                # alpha assumes that we're using a Gaussian-weighted rms
             alpha *= (0.168/0.015)**2   # convert to arcsec^2
             alpha *= 8*numpy.log(2)     # convert rms^2 to fwhm^2 for a Gaussian
+
             
-            alpha *= 0.5                # works better empirically!
             ax1.plot(visit, numpy.sqrt(fwhm**2 - alpha*focus**2), '.', label="corrected")
             ax1.legend(loc='best')
         ax1.set_ylabel("FWHM (arcsec)")
