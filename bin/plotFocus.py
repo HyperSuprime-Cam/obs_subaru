@@ -74,27 +74,28 @@ WHERE
     mjd -= int(mjd[0])
     mjd *= 24*60                        # minutes
     #
+    # Handle each section at constant altitude and without long gaps separately
+    #
+    sections = []                   # good sections
+    dAltitude = 5
+    dMjd = 20                   # minutes
+    i0 = -1
+    for i in range(len(altitude)):
+        if i0 < 0:
+            i0 = i
+
+        if i > 0 and (abs(altitude[i] - altitude[i-1]) > dAltitude or
+                      abs(mjd[i] - mjd[i-1]) > dMjd):
+            if i0 >= 0 and i > i0:
+                sections.append((i0, i))
+            i0 = i
+
+    sections.append((i0, len(focus)))
+
+    #
     # Estimate the focus position?
     #
     if args.estimateFocus:
-        #
-        # Handle each section at constant altitude and without long gaps separately
-        #
-        sections = []                   # good sections
-        dAltitude = 5
-        dMjd = 20                   # minutes
-        i0 = -1
-        for i in range(len(altitude)):
-            if i0 < 0:
-                i0 = i
-
-            if i > 0 and (abs(altitude[i] - altitude[i-1]) > dAltitude or
-                          abs(mjd[i] - mjd[i-1]) > dMjd):
-                if i0 >= 0 and i > i0:
-                    sections.append((i0, i))
-                i0 = i
-                    
-        sections.append((i0, len(focus)))
         
         t = mjd.astype(float)                 # observation time
 
@@ -141,8 +142,25 @@ WHERE
         ax0.errorbar(visit, -focus, yerr=focus_error, fmt='+', ms=2, label="Focus error")
         ax0.axhline(0.0, color='gray')
     else:
-        ax0.errorbar(visit, foc_val, label="foc-val")
-        ax0.errorbar(visit, foc_val - focus, yerr=focus_error, fmt='+', ms=4, label="predicted")
+        for i, s in enumerate(sections):
+            s = range(*s)
+
+            extended_visit = visit[s].astype(float)
+            fv = foc_val[s]
+
+            good = np.isfinite(fv)
+            extended_visit = extended_visit[good]
+            fv = fv[good]
+
+            if len(extended_visit) == 1:
+                fv = [fv, fv]
+                extended_visit = [extended_visit - 0.5, extended_visit + 0.5]
+            else:
+                extended_visit[0] -= 0.5
+                extended_visit[-1] += 0.5
+
+            ax0.errorbar(extended_visit, fv, color='blue', label="foc-val" if i == 0 else None)
+        ax0.errorbar(visit, foc_val - focus, yerr=focus_error, fmt='+', ms=4, color='green', label="predicted")
 
     if args.estimateFocus:
         if args.error:
