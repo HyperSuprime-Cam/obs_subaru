@@ -179,12 +179,15 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
         ax1.plot(visit, fwhm, '.', label="measured")
         if args.correctFwhmForFocusError:
             # rms^2 = rms_*^2 + alpha*focus^2  where rms is in arcsec and focus in mm
-            alpha = 4.2e-2              # rms and focus in mm from zemacs;  ../hsc/zemax_config?_0.0.dat
-            alpha /= 1.6                # alpha assumes that we're using a Gaussian-weighted rms
-            alpha *= (0.168/0.015)**2   # convert to arcsec^2
+            # if the f-ratio at the CCD is f, then alpha is 0.5*(1/(2*f))**2 (rms = 0.5*R^2)
+            f = 2.25
+            alpha = 0.5/(2*f)**2        # rms^2 size of doughnut in mm^2 if 1mm out of focus
+            alpha *= (0.20/0.12)**2     # when we command the hexapod to move 0.12mm the focus moves 0.20mm
+            alpha /= 0.015**2           # convert mm^2 to pixel^2
+            alpha *= 0.168**2           # convert pixel^2 to arcsec^2
             alpha *= 8*numpy.log(2)     # convert rms^2 to fwhm^2 for a Gaussian
+            alpha *= 0.25                # fiddle factor of unknown origin
 
-            
             ax1.plot(visit, numpy.sqrt(fwhm**2 - alpha*focus**2), '.', label="corrected")
             ax1.legend(loc='best').draggable()
         ax1.set_ylabel("FWHM (arcsec)")
