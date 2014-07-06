@@ -121,11 +121,15 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     #
     # Time to plot
     #
+    nSubplot = 1 + args.showFwhm + args.showAltitude
+
     axes = []
-    if not args.showFwhm and not args.showAltitude:
+    if nSubplot == 1:
         ax0 = pyplot.subplot2grid((1, 1), (0, 0))
-    else:
+    elif nSubplot == 2:
         ax0 = pyplot.subplot2grid((3, 1), (1, 0), rowspan=2)
+    else:
+        ax0 = pyplot.subplot2grid((6, 1), (2, 0), rowspan=4)
     axes.append(ax0)
 
     title = "Rerun %s" % args.rerun
@@ -169,13 +173,19 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     ax0.set_ylabel("Focus %s (mm)" % ("error" if args.error else "position"))
 
     if args.showAltitude or args.showFwhm:
-        ax1 = pyplot.subplot2grid((3, 1), (0, 0), sharex=ax0)
-        axes.append(ax1)
+        if args.showAltitude and args.showFwhm:
+            ax1 = pyplot.subplot2grid((6, 1), (1, 0), sharex=ax0)
+            axes.append(ax1)
 
-    if args.showAltitude:
-        ax1.plot(visit, altitude, '.', label="alt")
-        ax1.set_ylabel("Altitude")
-    elif args.showFwhm:
+            ax2 = pyplot.subplot2grid((6, 1), (0, 0), sharex=ax0)
+            axes.append(ax2)
+        else:
+            ax1 = pyplot.subplot2grid((3, 1), (0, 0), sharex=ax0)
+            axes.append(ax1)
+
+            ax2 = ax1
+
+    if args.showFwhm:
         ax1.plot(visit, fwhm, '.', label="measured")
         if args.correctFwhmForFocusError:
             # rms^2 = rms_*^2 + alpha*focus^2  where rms is in arcsec and focus in mm
@@ -190,7 +200,16 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
 
             ax1.plot(visit, numpy.sqrt(fwhm**2 - alpha*focus**2), '.', label="corrected")
             ax1.legend(loc='best').draggable()
+
         ax1.set_ylabel("FWHM (arcsec)")
+
+    if args.showAltitude:
+        ax2.plot(visit, altitude, '.', label="alt")
+        ax2.set_ylabel("Altitude")
+
+
+    ax1.yaxis.tick_right()
+    ax1.yaxis.set_label_position("right")
 
     x0, x1 = min(visit), max(visit)
     for ax in axes:
@@ -200,6 +219,10 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
         ax.set_xticks(range(10*int(0.1*x0), int(10*int(0.1*x1)), 5), minor=True)
         ax.set_xlim(x0 - 0.05*(x1 - x0), x1 + 0.05*(x1 - x0)) 
         ax.grid()
+
+    # Make subplots close to each other and hide x ticks for all but bottom plot.
+    pyplot.subplots_adjust(hspace=0)
+    pyplot.setp([ax.get_xticklabels() for ax in axes[1:]], visible=False)
 
     ax0.set_xlabel("visit")
 
