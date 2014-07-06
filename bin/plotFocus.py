@@ -25,6 +25,8 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
                         help="Correct measured FWHM for focus error", default=False)
     parser.add_argument('--estimateFocus', action="store_true",
                         help="Estimate the focus using a Kalman filter", default=False)
+    parser.add_argument('--noShade', action="store_true",
+                        help="Do not shade the Kalman region (works around matplotlib bug)", default=False)
     parser.add_argument('--modelErrorAsAcceleration', action="store_true",
                         help="Model state error as a stochastic acceleration", default=False)
     parser.add_argument('--jitter', type=float,
@@ -168,9 +170,11 @@ WHERE
         if args.error:
             focusHat -= foc_val
 
+        focusHat_error[np.logical_not(np.isfinite(focusHat_error))] = 1e10 # avoid warning from next line
+        focusHat_error[focusHat_error > 1] = np.nan
         for i, s in enumerate(sections):
             s = range(*s)
-            if False:
+            if args.noShade:
                 ax0.errorbar(visit[s], focusHat[s], yerr=focusHat_error[s], ms=2, color='red',
                              label="Kalman" if i == 0 else None)
             else:
