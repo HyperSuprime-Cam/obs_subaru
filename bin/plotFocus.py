@@ -15,8 +15,10 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     parser.add_argument('--rerun', required=True, help="Rerun to plot")
     parser.add_argument('--error', action="store_true",
                         help="Plot the focus error not the focus position", default=False)
-    parser.add_argument('--noFwhm', action="store_true",
-                        help="Don't include the FWHM panel", default=False)
+    parser.add_argument('--showAltitude', action="store_true",
+                        help="Plot the altitude", default=False)
+    parser.add_argument('--noFwhm', action="store_false", dest="showFwhm",
+                        help="Don't include the FWHM panel", default=True)
     parser.add_argument('--correctFwhmForFocusError', action="store_true",
                         help="Correct measured FWHM for focus error", default=False)
     parser.add_argument('--out', '-o', help="Output file")
@@ -41,10 +43,12 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
 
     import json
     foc_val = numpy.empty_like(focus)
+    altitude = numpy.empty_like(focus)
     focusSweepVisits = []
     for i, cards in enumerate(header):
         cards = json.loads(cards)
         foc_val[i] = cards["FOC-VAL"]
+        altitude[i] = cards["ALTITUDE"]
 
         if re.search(r"^focus", cards["OBJECT"], re.IGNORECASE):
             focusSweepVisits.append(visit[i])
@@ -53,8 +57,10 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
             foc_val[i] = numpy.nan
 
 
+    # Time to plot
+    #
     axes = []
-    if args.noFwhm:
+    if not args.showFwhm and not args.showAltitude:
         ax0 = pyplot.subplot2grid((1, 1), (0, 0))
     else:
         ax0 = pyplot.subplot2grid((3, 1), (1, 0), rowspan=2)
@@ -70,10 +76,14 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     ax0.legend(loc='best')
     ax0.set_ylabel("Focus %s (mm)" % ("error" if args.error else "position"))
 
-    if not args.noFwhm:
+    if args.showAltitude or args.showFwhm:
         ax1 = pyplot.subplot2grid((3, 1), (0, 0), sharex=ax0)
         axes.append(ax1)
 
+    if args.showAltitude:
+        ax1.plot(visit, altitude, '.', label="alt")
+        ax1.set_ylabel("Altitude")
+    elif args.showFwhm:
         ax1.plot(visit, fwhm, '.', label="measured")
         if args.correctFwhmForFocusError:
             # rms^2 = rms_*^2 + alpha*focus^2  where rms is in arcsec and focus in mm
@@ -84,7 +94,7 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
 
             
             ax1.plot(visit, numpy.sqrt(fwhm**2 - alpha*focus**2), '.', label="corrected")
-            ax1.legend(loc='best')
+            ax1.legend(loc='best').draggable()
         ax1.set_ylabel("FWHM (arcsec)")
 
     x0, x1 = min(visit), max(visit)
