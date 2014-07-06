@@ -225,7 +225,9 @@ WHERE
             alpha *= 8*numpy.log(2)     # convert rms^2 to fwhm^2 for a Gaussian
             alpha *= 0.25                # fiddle factor of unknown origin
 
-            ax1.plot(visit, numpy.sqrt(fwhm**2 - alpha*focus**2), '.', label="corrected")
+            focusErr = focusHat - foc_val if args.estimateFocus else focus
+
+            ax1.plot(visit, numpy.sqrt(fwhm**2 - alpha*focusErr**2), '.', label="corrected")
             ax1.legend(loc='best').draggable()
 
         ax1.set_ylabel("FWHM (arcsec)")
