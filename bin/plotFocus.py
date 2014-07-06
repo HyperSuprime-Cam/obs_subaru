@@ -152,7 +152,9 @@ WHERE
             extended_visit = extended_visit[good]
             fv = fv[good]
 
-            if len(extended_visit) == 1:
+            if len(extended_visit) == 0:
+                continue
+            elif len(extended_visit) == 1:
                 fv = [fv, fv]
                 extended_visit = [extended_visit - 0.5, extended_visit + 0.5]
             else:
