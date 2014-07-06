@@ -229,7 +229,7 @@ WHERE
     if args.showAltitude:
         ax2.plot(visit, altitude, '.', label="alt")
         ax2.set_ylabel("Altitude")
-
+        ax2.set_ylim(0, 92)
 
     ax1.yaxis.tick_right()
     ax1.yaxis.set_label_position("right")
