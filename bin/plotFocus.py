@@ -85,19 +85,12 @@ WHERE
         dMjd = 20                   # minutes
         i0 = -1
         for i in range(len(altitude)):
-            if False and not np.isfinite(focus[i]):
-                if i0 > 0 and i > i0:
-                    sections.append((i0, i))
-                    i0 = -1
-
-                continue
-
             if i0 < 0:
                 i0 = i
 
             if i > 0 and (abs(altitude[i] - altitude[i-1]) > dAltitude or
                           abs(mjd[i] - mjd[i-1]) > dMjd):
-                if i0 > 0 and i > i0:
+                if i0 >= 0 and i > i0:
                     sections.append((i0, i))
                 i0 = i
                     
