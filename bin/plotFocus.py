@@ -13,6 +13,8 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
 """)
     parser.add_argument('db', help="Sqlite3 data file")
     parser.add_argument('--rerun', required=True, nargs="+", help="Rerun to plot")
+    parser.add_argument('--visit0', type=int, help="Lowest visit number to include", default=0)
+    parser.add_argument('--visit1', type=int, help="Largest visit number to include", default=9999999)
     parser.add_argument('--error', action="store_true",
                         help="Plot the focus error not the focus position", default=False)
     parser.add_argument('--showAltitude', action="store_true",
@@ -37,10 +39,14 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     c = conn.cursor()
 
     query = '''
-        SELECT visit, fwhm, focus, focus_error, header_json FROM frames WHERE rerun
-                 in (''' + ",".join("?"*len(args.rerun)) + ''') AND focus IS NOT NULL
+SELECT visit, fwhm, focus, focus_error, header_json
+FROM frames
+WHERE
+ rerun in (''' + ",".join("?"*len(args.rerun)) + ''') AND
+ visit >= ? AND visit <= ? AND
+ focus IS NOT NULL
         '''
-    c.execute(query, tuple(args.rerun))
+    c.execute(query, tuple(args.rerun) + (args.visit0, args.visit1))
 
     visit, fwhm, focus, focus_error, header = numpy.array(list(list(line) for line in c)).T
     visit = visit.astype(int)
