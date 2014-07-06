@@ -12,7 +12,7 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     http://hsca-web01.subaru.nao.ac.jp/michitaro/web-preview
 """)
     parser.add_argument('db', help="Sqlite3 data file")
-    parser.add_argument('--rerun', required=True, help="Rerun to plot")
+    parser.add_argument('--rerun', required=True, nargs="+", help="Rerun to plot")
     parser.add_argument('--error', action="store_true",
                         help="Plot the focus error not the focus position", default=False)
     parser.add_argument('--showAltitude', action="store_true",
@@ -36,11 +36,11 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
-    c.execute('''
-        SELECT visit, fwhm, focus, focus_error, header_json FROM frames WHERE rerun = ? AND focus IS NOT NULL
-        ''',
-        (args.rerun, )
-    )
+    query = '''
+        SELECT visit, fwhm, focus, focus_error, header_json FROM frames WHERE rerun
+                 in (''' + ",".join("?"*len(args.rerun)) + ''') AND focus IS NOT NULL
+        '''
+    c.execute(query, tuple(args.rerun))
 
     visit, fwhm, focus, focus_error, header = numpy.array(list(list(line) for line in c)).T
     visit = visit.astype(int)
@@ -132,7 +132,11 @@ N.b. You can obtain the sqlite file from the "sqlite3" link at the bottom of
         ax0 = pyplot.subplot2grid((6, 1), (2, 0), rowspan=4)
     axes.append(ax0)
 
-    title = "Rerun %s" % args.rerun
+    if len(args.rerun) == 1:
+        title = "Rerun %s" % args.rerun[0]
+    else:
+        prefix = os.path.commonprefix(args.rerun)
+        title = "Reruns %s{%s}" % (prefix, ",".join(_[len(prefix):] for _ in args.rerun))
 
     if args.error:
         ax0.errorbar(visit, -focus, yerr=focus_error, fmt='+', ms=2, label="Focus error")
