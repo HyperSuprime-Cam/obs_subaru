@@ -110,7 +110,7 @@ WHERE
         else:
             errorModel = None
             if jitter is None:
-                jitter = 2e-3
+                jitter = 1e-4
 
         focusHat = np.nan + focus
         focusHat_error = np.nan + focus_error
@@ -338,7 +338,7 @@ else
         K = P.dot(H.T)/S                # Kalman gain
 
         x = x + K.dot(y)                # updated state estimate
-        P = (np.identity(1) - K.dot(H))*P # updated state covariance
+        P = (np.identity(len(x)) - np.outer(K, H)).dot(P) # updated state covariance
 
         if i == 1:
             P[1, 1] = large             # we have no idea what the initial velocity was
