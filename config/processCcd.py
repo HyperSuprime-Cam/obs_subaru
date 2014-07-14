@@ -75,6 +75,13 @@ try:
 except KeyError, ImportError:
     print "Cannot import lsst.meas.multifit: disabling CModel measurements"
 
+# Enable HSM shapes (unsetup meas_extensions_shapeHSM to disable)
+try:
+    import lsst.meas.extensions.shapeHSM
+    root.measurement.algorithms.names |= ["shape.hsm." + alg for alg in
+                                          ("bj", "linear", "ksb", "regauss", "shapelet")]
+except ImportError:
+    print "Cannot import lsst.meas.extensions.shapeHSM: disabling HSM shape measurements"
 
 root.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
 
