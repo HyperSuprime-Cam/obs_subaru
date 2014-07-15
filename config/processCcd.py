@@ -68,7 +68,20 @@ try:
 except ImportError:
     print "Cannot import lsst.meas.extensions.photometryKron: disabling Kron measurements"
 
+# In both the main measurement phase and the initial (pre-PSF) calibrate measurement,
+# the model flux slot is set to flux.gaussian, which produces a wider model-psf relation.
+root.calibrate.initialMeasurement.algorithms['classification.extendedness'].fluxRatio = 0.95
 root.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
+
+# Enable CModel mags in the post-PSF calibrate measurement, to enable aperture correction
+# of these later as well as better star/galaxy classification in photocal.
+# (unsetup meas_multifit or use $MEAS_MULTIFIT_DIR/config/disable-calibrate.py to disable)
+import os
+try:
+    root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable-calibrate.py'))
+except KeyError, ImportError:
+    root.calibrate.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
+    print "Cannot import lsst.meas.multifit: disabling CModel measurements in calibrate stage"
 
 # Enable deblender for processCcd
 root.measurement.doReplaceWithNoise = True
