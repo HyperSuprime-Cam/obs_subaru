@@ -69,12 +69,13 @@ except ImportError:
     print "Cannot import lsst.meas.extensions.photometryKron: disabling Kron measurements"
 
 # Enable CModel mags (unsetup meas_multifit or use $MEAS_MULTIFIT_DIR/config/disable.py to disable)
-import os
-try:
-    root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable.py'))
-except KeyError, ImportError:
-    root.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
-    print "Cannot import lsst.meas.multifit: disabling CModel measurements"
+if False:
+    import os
+    try:
+        root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable.py'))
+    except KeyError, ImportError:
+        root.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
+        print "Cannot import lsst.meas.multifit: disabling CModel measurements"
 
 # Enable HSM shapes (unsetup meas_extensions_shapeHSM to disable)
 try:
