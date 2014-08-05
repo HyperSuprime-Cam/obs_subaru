@@ -16,3 +16,5 @@ root.calibrate.astrometry.solver.catalogMatchDist = 2.0
 
 root.measurement.algorithms["jacobian"].pixelScale = 0.168
 
+# Do not use NO_DATA pixels for fringe subtraction.
+root.isr.fringe.stats.badMaskPlanes=['SAT', 'NO_DATA']
