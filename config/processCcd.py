@@ -2,6 +2,8 @@
 Subaru-specific overrides for ProcessCcdTask (applied before SuprimeCam- and HSC-specific overrides).
 """
 
+import os
+
 # This was a horrible choice of defaults: only the scaling of the flats
 # should determine the relative normalisations of the CCDs!
 root.isr.assembleCcd.doRenorm = False
@@ -52,30 +54,15 @@ root.detection.returnOriginalFootprints = False
 root.doWriteSourceMatches = True
 root.measurement.algorithms.names |= ["jacobian", "focalplane"]
 
-root.measurement.algorithms.names |= ["flux.aperture"]
-# Roughly (1.0, 1.4, 2.0, 2.8, 4.0, 5.7, 8.0, 11.3, 16.0, 22.6 arcsec) in diameter: 2**(0.5*i)
-root.measurement.algorithms["flux.aperture"].radii = [3.0, 4.5, 6.0, 9.0, 12.0, 17.0, 25.0, 35.0, 50.0, 70.0]
+# Activate calibration of measurements: required for aperture corrections
+root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'apertures.py'))
+root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmodel.py'))
+root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron.py'))
 
-# Use a large aperture to be independent of seeing in calibration
-root.calibrate.measurement.algorithms["flux.sinc"].radius = 12.0
-root.measurement.algorithms["flux.sinc"].radius = 12.0
-
-try:
-    import lsst.meas.extensions.photometryKron
-    root.measurement.algorithms.names |= ["flux.kron"]
-    # If we want to apply aperture corrections to the kron fluxes, we need to measure them in calibrate
-    root.calibrate.measurement.algorithms.names |= ["flux.kron"]
-except ImportError:
-    print "Cannot import lsst.meas.extensions.photometryKron: disabling Kron measurements"
-
-# Enable CModel mags (unsetup meas_multifit or use $MEAS_MULTIFIT_DIR/config/disable.py to disable)
-if False:
-    import os
-    try:
-        root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable.py'))
-    except KeyError, ImportError:
-        root.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
-        print "Cannot import lsst.meas.multifit: disabling CModel measurements"
+# Activate deep measurements
+root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'apertures.py'))
+root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron.py'))
+# Note no CModel: it's slow.
 
 # Enable HSM shapes (unsetup meas_extensions_shapeHSM to disable)
 try:
@@ -84,20 +71,6 @@ try:
                                           ("bj", "linear", "ksb", "regauss", "shapelet")]
 except ImportError:
     print "Cannot import lsst.meas.extensions.shapeHSM: disabling HSM shape measurements"
-
-# In the initial (pre-PSF) calibrate measurement, the model flux slot is always set to
-# flux.gaussian, which produces a wider model-psf relation.
-root.calibrate.initialMeasurement.algorithms['classification.extendedness'].fluxRatio = 0.95
-
-# Enable CModel mags in the post-PSF calibrate measurement, to enable aperture correction
-# of these later as well as better star/galaxy classification in photocal.
-# (unsetup meas_multifit or use $MEAS_MULTIFIT_DIR/config/disable-calibrate.py to disable)
-import os
-try:
-    root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable-calibrate.py'))
-except KeyError, ImportError:
-    root.calibrate.measurement.algorithms['classification.extendedness'].fluxRatio = 0.95
-    print "Cannot import lsst.meas.multifit: disabling CModel measurements in calibrate stage"
 
 # Enable deblender for processCcd
 root.measurement.doReplaceWithNoise = True
