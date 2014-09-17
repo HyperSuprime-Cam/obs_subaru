@@ -90,11 +90,6 @@ class HscMapper(CameraMapper):
         #
         self.filters = {}
         for f in [
-            "W-S-G+",
-            "W-S-R+",
-            "W-S-I+",
-            "W-S-Z+",
-            "W-S-ZR",
             "HSC-G",
             "HSC-R",
             "HSC-I",
