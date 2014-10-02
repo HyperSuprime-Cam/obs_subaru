@@ -68,6 +68,7 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron
 try:
     import lsst.meas.extensions.shapeHSM
     root.measurement.algorithms.names |= ["shape.hsm.regauss"]
+    root.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "deblend.nchild"
 except ImportError:
     print "Cannot import lsst.meas.extensions.shapeHSM: disabling HSM shape measurements"
 
