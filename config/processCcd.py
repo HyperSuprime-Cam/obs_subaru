@@ -67,8 +67,7 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron
 # Enable HSM shapes (unsetup meas_extensions_shapeHSM to disable)
 try:
     import lsst.meas.extensions.shapeHSM
-    root.measurement.algorithms.names |= ["shape.hsm." + alg for alg in
-                                          ("bj", "linear", "ksb", "regauss", "shapelet")]
+    root.measurement.algorithms.names |= ["shape.hsm.regauss"]
 except ImportError:
     print "Cannot import lsst.meas.extensions.shapeHSM: disabling HSM shape measurements"
 
