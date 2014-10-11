@@ -10,5 +10,6 @@ root.measurement.slots.instFlux = None
 try:
     import lsst.meas.extensions.shapeHSM
     root.measurement.algorithms.names |= ["shape.hsm.regauss"]
+    root.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "deblend.nchild"
 except ImportError:
     print "Cannot import lsst.meas.extensions.shapeHSM: disabling shear measurement"
