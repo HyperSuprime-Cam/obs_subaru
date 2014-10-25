@@ -22,6 +22,8 @@ class SubaruAstrometryConfig(ptAstrometry.AstrometryConfig):
 # Use hsc.meas.astrom, failing over to lsst.meas.astrom
 class SubaruAstrometryTask(ptAstrometry.AstrometryTask):
     ConfigClass = SubaruAstrometryConfig
+    AstrometerClass = hscAstrom.TaburAstrometry
+
     @pipeBase.timeMethod
     def astrometry(self, exposure, sources, bbox=None):
         """Solve astrometry to produce WCS
@@ -42,8 +44,6 @@ class SubaruAstrometryTask(ptAstrometry.AstrometryTask):
 
         astrom = None
         try:
-            if not self.astrometer or not isinstance(self.astrometer, hscAstrom.TaburAstrometry):
-                self.astrometer = hscAstrom.TaburAstrometry(self.config.solver, log=self.log)
             astrom = self.astrometer.determineWcs(sources, exposure)
             if astrom is None:
                 raise RuntimeError("hsc.meas.astrom failed to determine the WCS")
@@ -51,9 +51,8 @@ class SubaruAstrometryTask(ptAstrometry.AstrometryTask):
             self.log.warn("hsc.meas.astrom failed (%s)" % e)
             if self.config.failover:
                 self.log.info("Failing over to lsst.meas.astrom....")
-                # N.b. this will replace the previous astrometer with a meas_astrom one
-                self.astrometer = measAstrom.Astrometry(self.config.solver, log=self.log)
-                astrom = self.astrometer.determineWcs(sources, exposure)
+                astrometer = measAstrom.Astrometry(self.config.solver, log=self.log)
+                astrom = astrometer.determineWcs(sources, exposure)
 
         if astrom is None and self.config.allowFailedAstrometry:
             matches = []
