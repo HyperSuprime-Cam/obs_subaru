@@ -268,11 +268,8 @@ class SubaruIsrTask(IsrTask):
             self.guider(ccdExposure)
 
         if self.config.doWriteVignettePolygon:
-            # Create polygon of ccd corners in focal plane coordinates
-            corners = ccd.getAllPixels().getCorners()
-            fpCorners = [ccd.getPositionFromPixel(afwGeom.Point2D(i)).getMm() for i in corners]
-            ccdPolygon = Polygon(fpCorners)
-            
+            ccdPolygon = self.getCcdFpPolygon(ccd)
+
             # get intersection of polygon with vignette region
             fpPolygon = ccdPolygon.intersectionSingle(self.vignettePolygon)
 
