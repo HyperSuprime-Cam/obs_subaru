@@ -66,11 +66,11 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron
 
 # Enable HSM shapes (unsetup meas_extensions_shapeHSM to disable)
 try:
-    import lsst.meas.extensions.shapeHSM
-    root.measurement.algorithms.names |= ["shape.hsm.regauss"]
+    root.calibrate.measurement.load(os.path.join(os.environ['MEAS_EXTENSIONS_SHAPEHSM_DIR'], 'config', 'enable.py'))
+    root.measurement.load(os.path.join(os.environ['MEAS_EXTENSIONS_SHAPEHSM_DIR'], 'config', 'enable.py'))
     root.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "deblend.nchild"
-except ImportError:
-    print "Cannot import lsst.meas.extensions.shapeHSM: disabling HSM shape measurements"
+except:
+    print "Cannot enable shapeHSM: disabling HSM shape measurements"
 
 # Enable deblender for processCcd
 root.measurement.doReplaceWithNoise = True

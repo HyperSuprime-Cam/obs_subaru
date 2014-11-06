@@ -5,10 +5,9 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmod
 
 root.measurement.slots.instFlux = None
 
-# Enable HSM Regaussianization shear measurement (unsetup meas_extensions_shapeHSM to disable)
+# Enable HSM shapes (unsetup meas_extensions_shapeHSM to disable)
 try:
-    import lsst.meas.extensions.shapeHSM
-    root.measurement.algorithms.names |= ["shape.hsm.regauss"]
+    root.measurement.load(os.path.join(os.environ['MEAS_EXTENSIONS_SHAPEHSM_DIR'], 'config', 'enable.py'))
     root.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "deblend.nchild"
-except ImportError:
-    print "Cannot import lsst.meas.extensions.shapeHSM: disabling shear measurement"
+except:
+    print "Cannot enable shapeHSM: disabling shear measurement"
