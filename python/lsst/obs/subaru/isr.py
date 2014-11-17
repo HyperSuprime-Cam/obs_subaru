@@ -390,7 +390,8 @@ class SubaruIsrTask(IsrTask):
                 if e.errno != 17:
                     raise e
         image = exposure.getMaskedImage().getImage()
-        fitsthumb.createFitsThumb(image.getArray(), filename, width, height, True)
+        fitsthumb.createThumbnail(image.getArray(), filename,
+                                  fitsthumb.AbsoluteSize(width, height), fitsthumb.LinearScale())
 
     def measureOverscan(self, ccdExposure, amp):
         clipSigma = 3.0
