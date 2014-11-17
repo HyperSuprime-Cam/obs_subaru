@@ -373,7 +373,7 @@ class SubaruIsrTask(IsrTask):
 
         self.log.info("Set %d BAD pixels to %.2f" % (badPixels.sum(), value))
 
-    def writeThumbnail(self, dataRef, dataset, exposure, width=500, height=0):
+    def writeThumbnail(self, dataRef, dataset, exposure, relativeSize=0.25):
         """Write out exposure to a snapshot file named outfile in the given size.
         """
         if fitsthumb is None:
@@ -391,7 +391,7 @@ class SubaruIsrTask(IsrTask):
                     raise e
         image = exposure.getMaskedImage().getImage()
         fitsthumb.createThumbnail(image.getArray(), filename,
-                                  fitsthumb.AbsoluteSize(width, height), fitsthumb.LinearScale())
+                                  fitsthumb.RelativeSize(relativeSize), fitsthumb.LinearScale(), True)
 
     def measureOverscan(self, ccdExposure, amp):
         clipSigma = 3.0
