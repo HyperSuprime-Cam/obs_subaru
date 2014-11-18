@@ -187,9 +187,22 @@ class SubaruIsrTask(IsrTask):
         ccdExposure = self.convertIntToFloat(ccdExposure)
         ccd = afwCG.cast_Ccd(ccdExposure.getDetector())
 
+        defectList = [v.getBBox() for v in ccd.getDefects()]
+
         for amp in ccd:
+            # Check if entire amp region is defined as defect
+            badAmp = bool(sum([v.contains(amp.getDataSec(True)) for v in defectList]))
+
+            # In the case of bad amp, we will set mask to "BAD"
+            if badAmp:
+                for box in (amp.getDiskDataSec(), amp.getDiskBiasSec()):
+                    dataView = afwImage.MaskedImageF(ccdExposure.getMaskedImage(), box, afwImage.PARENT)
+                    maskView = dataView.getMask()
+                    maskView |= maskView.getPlaneBitMask('BAD')
+                    del maskView
+
             self.measureOverscan(ccdExposure, amp)
-            if self.config.doSaturation:
+            if self.config.doSaturation and not badAmp:
                 self.saturationDetection(ccdExposure, amp)
             if self.config.doOverscan:
                 ampImage = afwImage.MaskedImageF(ccdExposure.getMaskedImage(), amp.getDiskDataSec(),
@@ -578,6 +591,18 @@ class SubaruIsrTask(IsrTask):
         lsstIsr.flatCorrection(exposure.getMaskedImage(), flatfield.getMaskedImage(),
                                scalingType="USER", userScale=1.0)
 
+    def saturationDetection(self, exposure, amp, maskName="SAT"):
+        """Detect saturated pixels and mask them using mask plane "SAT", in place
+
+        @param[in,out]  exposure    exposure to process; only the amp DataSec is processed
+        @param[in]      amp         amplifier device data
+        """
+        if not self.checkIsAmp(amp):
+            raise RuntimeError("This method must be executed on an amp.")
+        for box in (amp.getDiskDataSec(), amp.getDiskBiasSec()):
+            dataView = afwImage.MaskedImageF(exposure.getMaskedImage(), box, afwImage.PARENT)
+            bad = numpy.where(dataView.getImage().getArray() > amp.getElectronicParams().getSaturationLevel())
+            dataView.getMask().getArray()[bad] = dataView.getMask().getPlaneBitMask(maskName)
 
 class SuprimecamIsrConfig(SubaruIsrConfig):
     def setDefaults(self):
