@@ -6,5 +6,11 @@ root.algorithms.names |= ["flux.aperture"]
 # (assuming plate scale of 0.168 arcsec pixels)
 root.algorithms["flux.aperture"].radii = [3.0, 4.5, 6.0, 9.0, 12.0, 17.0, 25.0, 35.0, 50.0, 70.0]
 
-# Use a large aperture to be independent of seeing in calibration
+# Use a large aperture to be somewhat independent of seeing (used by ApFlux slot)
 root.algorithms["flux.sinc"].radius = 12.0
+
+# Use an even larger aperture for the flux used in calibration (the CalibFlux slot)
+# We use flux.naive for that because we expect we don't need the sinc algorithm for
+# large apertures.  If we make this too much smaller, we should switch it to a
+# re-registration of flux.sinc (in meas_algorithms).
+root.algorithms["flux.naive"].radius = 20.0
