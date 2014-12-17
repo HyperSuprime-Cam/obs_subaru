@@ -71,7 +71,8 @@ class HscMapper(CameraMapper):
 
         afwImageUtils.resetFilters()
         afwImageUtils.defineFilter(name='None', lambdaEff=0,
-                                   alias=["NONE", 'Unrecognised', 'UNRECOGNISED',])
+                                   alias=["NONE", 'Unrecognised', 'UNRECOGNISED',
+                                          'Unrecognized', 'UNRECOGNIZED', 'NOTSET',])
         afwImageUtils.defineFilter(name='g', lambdaEff=477, alias=['W-S-G+', 'HSC-G'])
         afwImageUtils.defineFilter(name='r', lambdaEff=623, alias=['W-S-R+', 'HSC-R'])
         afwImageUtils.defineFilter(name='r1', lambdaEff=623, alias=['109', 'ENG-R1'])
