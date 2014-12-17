@@ -43,9 +43,6 @@ try:
 except ImportError:
     print "hscAstrom is not setup; using LSST's meas_astrom instead"
 
-# Reference catalog may not have as good star/galaxy discrimination as our data
-root.calibrate.photocal.badFlags += ["classification.extendedness",]
-
 # Demand astrometry and photoCal succeed
 root.calibrate.requireAstrometry = True
 root.calibrate.requirePhotoCal = True
