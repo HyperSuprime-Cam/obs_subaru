@@ -1181,6 +1181,12 @@ datasets: {
         persistable:   "SourceCatalog"
         storage:       "FitsCatalogStorage"
     }
+    deepCoadd_peak_schema: {
+        template:      "schema/deepCoadd_peak.fits"
+        python:        "lsst.afw.detection.PeakCatalog"
+        persistable:   "PeakCatalog"
+        storage:       "FitsCatalogStorage"
+    }
 
     # Measurements on coadds
     deepCoadd_meas: {
