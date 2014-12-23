@@ -70,8 +70,8 @@ class HscMapper(CameraMapper):
         # object IDs (e.g. on coadds) and changing the order will invalidate old objIDs
 
         afwImageUtils.resetFilters()
-        afwImageUtils.defineFilter(name='None', lambdaEff=0,
-                                   alias=["NONE", 'Unrecognised', 'UNRECOGNISED',
+        afwImageUtils.defineFilter(name='UNRECOGNISED', lambdaEff=0,
+                                   alias=["NONE", "None", 'Unrecognised',
                                           'Unrecognized', 'UNRECOGNIZED', 'NOTSET',])
         afwImageUtils.defineFilter(name='g', lambdaEff=477, alias=['W-S-G+', 'HSC-G'])
         afwImageUtils.defineFilter(name='r', lambdaEff=623, alias=['W-S-R+', 'HSC-R'])
@@ -79,7 +79,8 @@ class HscMapper(CameraMapper):
         afwImageUtils.defineFilter(name='i', lambdaEff=775, alias=['W-S-I+', 'HSC-I'])
         afwImageUtils.defineFilter(name='z', lambdaEff=925, alias=['W-S-Z+', 'HSC-Z'])
         afwImageUtils.defineFilter(name='y', lambdaEff=990, alias=['W-S-ZR', 'HSC-Y'])
-        afwImageUtils.defineFilter(name='N656', lambdaEff=921, alias=['NB0656'])
+        afwImageUtils.defineFilter(name='N515', lambdaEff=515, alias=['NB0515'])
+        afwImageUtils.defineFilter(name='N656', lambdaEff=656, alias=['NB0656'])
         afwImageUtils.defineFilter(name='N921', lambdaEff=921, alias=['NB0921'])
         afwImageUtils.defineFilter(name='SH', lambdaEff=0, alias=['SH',])
         afwImageUtils.defineFilter(name='PH', lambdaEff=0, alias=['PH',])
@@ -91,23 +92,23 @@ class HscMapper(CameraMapper):
         #
         self.filters = {}
         for f in [
-            "W-S-G+",
-            "W-S-R+",
-            "W-S-I+",
-            "W-S-Z+",
-            "W-S-ZR",
             "HSC-G",
             "HSC-R",
             "HSC-I",
             "HSC-Z",
             "HSC-Y",
             "ENG-R1",
+            "NB0515",
+            "NB0656",
+            "NB0921",
             "SH",
             "PH",
             "NONE",
             "UNRECOGNISED"]:
             # Get the canonical name -- see #2113
             self.filters[f] = afwImage.Filter(afwImage.Filter(f).getId()).getName()
+        self.defaultFilterName = "UNRECOGNISED"
+
         #
         # The number of bits allocated for fields in object IDs, appropriate for
         # the default-configured Rings skymap.
