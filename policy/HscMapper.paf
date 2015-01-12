@@ -1250,7 +1250,7 @@ datasets: {
 
     multiband_config: {
         template:      "config/multiband.py"
-        python:        "lsst.pipe.tasks.multiBand.MultiBandConfig"
+        python:        "hsc.pipe.tasks.multiband.MultiBandConfig"
         persistable:   "Config"
         storage:       "ConfigStorage"
     }
