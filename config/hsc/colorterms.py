@@ -3,6 +3,13 @@
 from lsst.meas.photocal.colorterms import ColortermConfig, ColortermGroupConfig
 
 root.library = {
+    "hsc*": ColortermGroupConfig.fromValues(
+        {'g': ColortermConfig.fromValues("g", "g"),
+         'r': ColortermConfig.fromValues("r", "r"),
+         'i': ColortermConfig.fromValues("i", "i"),
+         'z': ColortermConfig.fromValues("z", "z"),
+         'y': ColortermConfig.fromValues("y", "y"),
+         }),
     "sdss*": ColortermGroupConfig.fromValues(
         {'g': ColortermConfig.fromValues("g", "r", -0.00816446, -0.08366937, -0.00726883),
          'r': ColortermConfig.fromValues("r", "i",  0.00231810,  0.01284177, -0.03068248),
