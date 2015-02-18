@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import math
 import numpy
 
 from contextlib import contextmanager
@@ -140,6 +141,21 @@ after applying the nominal gain
         doc = "Persist Polygon used to define vignetted region?",
         default = True,
         )
+    fluxMag0T1 = pexConfig.DictField(
+        keytype = str,
+        itemtype = float,
+        doc = "The approximate flux of a zero-magnitude object in a one-second exposure, per filter",
+        # These are the HSC sensitivities from:
+        # http://www.subarutelescope.org/Observing/Instruments/HSC/sensitivity.html
+        default = dict((f, pow(10.0, 0.4*m)) for f,m in (("g", 29.0),
+                                                         ("r", 29.0),
+                                                         ("i", 28.6),
+                                                         ("z", 27.7),
+                                                         ("y", 27.4),
+                                                         ))
+    )
+    defaultFluxMag0T1 = pexConfig.Field(dtype=float, default=28.0,
+                                        doc="Default value for fluxMag0T1 (for an unrecognised filter)")
 
     def validate(self):
         super(SubaruIsrConfig, self).validate()
@@ -279,6 +295,8 @@ class SubaruIsrTask(IsrTask):
 
         if self.config.doGuider:
             self.guider(ccdExposure)
+
+        self.roughZeroPoint(ccdExposure)
 
         if self.config.doWriteVignettePolygon:
             self.setValidPolygonIntersect(ccdExposure, self.vignettePolygon)
@@ -603,6 +621,19 @@ class SubaruIsrTask(IsrTask):
             dataView = afwImage.MaskedImageF(exposure.getMaskedImage(), box, afwImage.PARENT)
             bad = numpy.where(dataView.getImage().getArray() > amp.getElectronicParams().getSaturationLevel())
             dataView.getMask().getArray()[bad] = dataView.getMask().getPlaneBitMask(maskName)
+
+    def roughZeroPoint(self, exposure):
+        """Set an approximate magnitude zero point for the exposure"""
+        filterName = afwImage.Filter(exposure.getFilter().getId()).getName() # Canonical name for filter
+        if filterName in self.config.fluxMag0T1:
+            fluxMag0 = self.config.fluxMag0T1[filterName]
+        else:
+            self.log.warn("No rough magnitude zero point set for filter %s" % filterName)
+            fluxMag0 = self.config.defaultFluxMag0T1
+        expTime = exposure.getCalib().getExptime()
+        self.log.info("Setting rough magnitude zero point: %f" % (2.5*math.log10(fluxMag0*expTime),))
+        exposure.getCalib().setFluxMag0(fluxMag0*expTime)
+
 
 class SuprimecamIsrConfig(SubaruIsrConfig):
     def setDefaults(self):
