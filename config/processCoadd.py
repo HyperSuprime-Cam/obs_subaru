@@ -11,3 +11,5 @@ try:
     root.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "deblend.nchild"
 except:
     print "Cannot enable shapeHSM: disabling shear measurement"
+
+root.deblend.maxNumberOfPeaks = 20
