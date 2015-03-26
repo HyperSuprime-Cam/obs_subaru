@@ -10,7 +10,6 @@ setupOptional(meas_extensions_multiShapelet)
 setupOptional(meas_extensions_photometryKron)
 setupOptional(meas_extensions_shapeHSM)
 setupOptional(meas_multifit)
-setupOptional(fitsthumb)
 setupOptional(distEst)
 setupOptional(meas_extensions_psfex)
 
