@@ -4,3 +4,5 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmodel.py'))
 
 root.deblend.maxNumberOfPeaks = 20
+
+root.measurement.algorithms["flags.pixel"].masks = ["CLIPPED"]

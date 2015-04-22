@@ -13,3 +13,5 @@ except:
     print "Cannot enable shapeHSM: disabling shear measurement"
 
 root.deblend.maxNumberOfPeaks = 20
+
+root.measurement.algorithms["flags.pixel"].masks = ["CLIPPED"]
