@@ -59,19 +59,15 @@ root.measurement.algorithms.names |= ["jacobian", "focalplane"]
 root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'apertures.py'))
 root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmodel.py'))
 root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron.py'))
+root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsm.py'))
+if "shape.hsm.regauss" in root.calibrate.measurement.algorithms:
+    root.calibrate.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "" # no deblending has been done
 
 # Activate deep measurements
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'apertures.py'))
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron.py'))
+root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsm.py'))
 # Note no CModel: it's slow.
-
-# Enable HSM shapes (unsetup meas_extensions_shapeHSM to disable)
-try:
-    root.calibrate.measurement.load(os.path.join(os.environ['MEAS_EXTENSIONS_SHAPEHSM_DIR'], 'config', 'enable.py'))
-    root.measurement.load(os.path.join(os.environ['MEAS_EXTENSIONS_SHAPEHSM_DIR'], 'config', 'enable.py'))
-    root.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "deblend.nchild"
-except:
-    print "Cannot enable shapeHSM: disabling HSM shape measurements"
 
 # Enable deblender for processCcd
 root.measurement.doReplaceWithNoise = True
