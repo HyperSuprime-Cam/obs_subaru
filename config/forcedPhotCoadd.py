@@ -8,4 +8,4 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmod
 root.measurement.algorithms.names -= ["flux.gaussian"]
 root.measurement.slots.instFlux = None
 
-root.measurement.algorithms["flags.pixel"].masks = ["CLIPPED"]
+root.measurement.algorithms["flags.pixel"].any = ["CLIPPED"]

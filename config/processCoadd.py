@@ -8,4 +8,4 @@ root.measurement.slots.instFlux = None
 
 root.deblend.maxNumberOfPeaks = 20
 
-root.measurement.algorithms["flags.pixel"].masks = ["CLIPPED"]
+root.measurement.algorithms["flags.pixel"].any = ["CLIPPED"]
