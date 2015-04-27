@@ -34,12 +34,7 @@ try:
     # the next line will fail if hscAstrom is not setup; in that case we just use lsst.meas.astrm
     from lsst.obs.subaru.astrometry import SubaruAstrometryTask
     root.calibrate.astrometry.retarget(SubaruAstrometryTask)
-    root.calibrate.astrometry.solver.filterMap = { 'B': 'g',
-                                                   'V': 'r',
-                                                   'R': 'r',
-                                                   'I': 'i',
-                                                   'y': 'z',
-                                                   }
+    root.calibrate.astrometry.solver.load(os.path.join(os.environ["OBS_SUBARU_DIR"], "config", "filterMap.py"))
 except ImportError:
     print "hscAstrom is not setup; using LSST's meas_astrom instead"
 

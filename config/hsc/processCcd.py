@@ -19,3 +19,5 @@ root.measurement.algorithms["jacobian"].pixelScale = 0.168
 
 # Do not use NO_DATA pixels for fringe subtraction.
 root.isr.fringe.stats.badMaskPlanes=['SAT', 'NO_DATA']
+
+root.calibrate.astrometry.solver.load(os.path.join(os.environ["OBS_SUBARU_DIR"], "config", "hsc", "filterMap.py"))
