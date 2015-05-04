@@ -223,7 +223,7 @@ class SubaruIsrTask(IsrTask):
             self.measureOverscan(ccdExposure, amp)
             if self.config.doSaturation and not badAmp:
                 self.saturationDetection(ccdExposure, amp)
-            if self.config.doOverscan:
+            if self.config.doOverscan and not badAmp:
                 ampImage = afwImage.MaskedImageF(ccdExposure.getMaskedImage(), amp.getDiskDataSec(),
                                                  afwImage.PARENT)
                 overscan = afwImage.MaskedImageF(ccdExposure.getMaskedImage(), amp.getDiskBiasSec(),
