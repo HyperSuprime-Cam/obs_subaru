@@ -9,3 +9,5 @@ root.measurement.algorithms.names -= ["flux.gaussian"]
 root.measurement.slots.instFlux = None
 
 root.measurement.algorithms["flags.pixel"].any = ["CLIPPED"]
+
+root.deblend.load(os.path.join(os.environ["OBS_SUBARU_DIR"], "config", "deblend.py"))

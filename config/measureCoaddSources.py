@@ -4,8 +4,8 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmodel.py'))
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsm.py'))
 
-root.deblend.maxNumberOfPeaks = 20
-
 root.measurement.algorithms["flags.pixel"].any = ["CLIPPED"]
 
 root.astrometry.solver.load(os.path.join(os.environ["OBS_SUBARU_DIR"], "config", "filterMap.py"))
+
+root.deblend.load(os.path.join(os.environ["OBS_SUBARU_DIR"], "config", "deblend.py"))
