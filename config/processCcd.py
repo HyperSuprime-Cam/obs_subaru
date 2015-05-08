@@ -58,6 +58,8 @@ root.calibrate.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'conf
 if "shape.hsm.regauss" in root.calibrate.measurement.algorithms:
     root.calibrate.measurement.algorithms["shape.hsm.regauss"].deblendNChild = "" # no deblending has been done
 
+root.calibrate.measureCurveOfGrowth.nAperture = 8 # 35 pixels is sufficient and more stable than 70
+
 # Activate deep measurements
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'apertures.py'))
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron.py'))
