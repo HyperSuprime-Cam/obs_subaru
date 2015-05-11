@@ -428,8 +428,9 @@ class SubaruIsrTask(IsrTask):
         statsCtrl.setAndMask(binned.getMask().getPlaneBitMask(["SAT", "BAD", "INTRP"]))
         stats = afwMath.makeStatistics(binned, afwMath.MEDIAN | afwMath.STDEVCLIP | afwMath.MAX, statsCtrl)
         low = stats.getValue(afwMath.MEDIAN) - self.config.thumbnailStdev*stats.getValue(afwMath.STDEVCLIP)
-        makeRGB(binned, binned, binned, min=low, range=self.config.thumbnailRange, Q=self.config.thumbnailQ,
-                fileName=filename, saturatedBorderWidth=self.config.thumbnailSatBorder,
+        makeRGB(binned, binned, binned, minimum=low, range=self.config.thumbnailRange,
+                Q=self.config.thumbnailQ, fileName=filename,
+                saturatedBorderWidth=self.config.thumbnailSatBorder,
                 saturatedPixelValue=stats.getValue(afwMath.MAX))
 
     def measureOverscan(self, ccdExposure, amp):
