@@ -783,7 +783,7 @@ def diffs(mosaics, visits, refVisit=None, scale=True, raw=None,
 
             s0 = 0 if (s and not raw) else afwMath.makeStatistics(diff, afwMath.MEDIAN).getValue()
             s0 -= 0.5*rng
-            ds9.ds9Cmd("scale linear; scale limits %g %g" % (s0, s0 + rng), frame=frame)
+            ds9.scale("linear", s0, s0 + rng, frame=frame)
 
             frame += 1
 
@@ -866,7 +866,7 @@ def imagePca(mosaics, visits=None, nComponent=3, log=False, rng=30,
     if showEigen:
         for i in range(len(eImages)):
             ds9.mtv(eImages[i], frame=frame, title="%d %.2g" % (i, eValues[i]))
-            ds9.ds9Cmd("scale linear; scale mode zscale")
+            ds9.scale("linear", "zscale", frame=frame)
             frame += 1
 
         pyplot.clf()
@@ -915,7 +915,7 @@ def imagePca(mosaics, visits=None, nComponent=3, log=False, rng=30,
                     ds9.erase(frame=frame)
                 s0 = afwMath.makeStatistics(recon, afwMath.MEDIAN).getValue()
                 s0 -= 0.5*rng[0]
-                ds9.ds9Cmd("scale linear; scale limits %g %g" % (s0, s0 + rng[0]), frame=frame)
+                ds9.scale("linear", s0, s0 + rng[0], frame=frame)
                 ds9.dot("%s %d" % ("orig" if showOriginal else "resid", v),
                         int(0.5*im.getWidth()), int(0.15*im.getHeight()), frame=frame, ctype=ds9.RED)
                 if labels.has_key(v):
@@ -932,7 +932,7 @@ def imagePca(mosaics, visits=None, nComponent=3, log=False, rng=30,
                     ds9.erase(frame=frame)
                 s0 = 0
                 s0 -= 0.5*rng[1]
-                ds9.ds9Cmd("scale linear; scale limits %g %g" % (s0, s0 + rng[1]), frame=frame)
+                ds9.scale("linear", s0, s0 + rng[1], frame=frame)
 
                 frame += 1
 
