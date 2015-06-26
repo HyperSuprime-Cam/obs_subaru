@@ -14,6 +14,9 @@ root.isr.fringe.filters = ['y',]
 root.isr.doWrite = False
 root.isr.doCrosstalk = True
 root.isr.doGuider = False
+root.isr.doBrighterFatter = False
+root.isr.brighterFatterKernelFile = os.path.join(os.environ["OBS_SUBARU_DIR"], "hsc",
+                                                 "brighter_fatter_kernel.pkl")
 
 # These values from RHL's report on "HSC July Commissioning Data" (2013-08-23)
 root.isr.crosstalk.coeffs.values = [
