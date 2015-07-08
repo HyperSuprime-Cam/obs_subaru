@@ -174,12 +174,12 @@ after applying the nominal gain
         )
     brighterFatterMaxIter = pexConfig.Field(
         dtype = int,
-        default = 20,
+        default = 10,
         doc = "Maximum number of iterations for the brighter fatter correction"
         )
     brighterFatterThreshold = pexConfig.Field(
         dtype = float,
-        default = 100,
+        default = 1000,
         doc = "Threshold used to stop iterating the brighter fatter correction.  It is the "
         " absolute value of the difference between the current corrected image and the one"
         " from the previous iteration summed over all the pixels."
@@ -716,8 +716,6 @@ class SubaruIsrTask(IsrTask):
         self.log.info("Applying brighter fatter correction")
 
         image = exposure.getMaskedImage().getImage()
-        finalIter = -1
-        finalDiff = -1
 
         # The image needs to be units of electrons/holes
         with self.gainContext(exposure, image, applyGain) as exp:
@@ -769,16 +767,15 @@ class SubaruIsrTask(IsrTask):
 
                 if iteration > 0:
                     diff = numpy.sum(numpy.abs(prev_image - tmpArray))
+
                     if diff < threshold:
-                        finalIter = iteration + 1
-                        finalDiff = diff
                         break
                     prev_image[:,:] = tmpArray[:,:]
 
             if iteration == maxIter -1:
-                self.log.warn("Brighter fatter correcton did not converge, final difference %f" % finalDiff)
+                self.log.warn("Brighter fatter correcton did not converge, final difference %f" % diff)
 
-            self.log.info("Finished brighter fatter in %d iterations" % finalIter)
+            self.log.info("Finished brighter fatter in %d iterations" % (iteration + 1))
             image.getArray()[startY+1:endY-1, startX+1:endX-1] += corr[startY+1:endY-1, startX+1:endX-1]
 
 
