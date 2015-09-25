@@ -5,6 +5,7 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmod
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsm.py'))
 
 root.measurement.algorithms["flags.pixel"].any = ["CLIPPED"]
+root.measurement.algorithms.names |= ["countInputs"]
 
 root.astrometry.solver.load(os.path.join(os.environ["OBS_SUBARU_DIR"], "config", "filterMap.py"))
 
