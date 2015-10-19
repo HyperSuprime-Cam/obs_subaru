@@ -7,7 +7,7 @@ root.isr.crosstalk.retarget(CrosstalkTask)
 
 root.isr.overscanFitType = "AKIMA_SPLINE"
 root.isr.overscanPolyOrder = 30
-root.isr.doBias = True # Overscan is fairly efficient at removing bias level, but leaves a line in the middle
+root.isr.doBias = False # Overscan is fairly efficient at removing bias level, but leaves a line in the middle
 root.isr.doDark = True # Required especially around CCD 33
 root.isr.doFringe = True
 root.isr.fringe.filters = ['y',]
