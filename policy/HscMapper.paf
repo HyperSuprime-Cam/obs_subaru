@@ -152,7 +152,7 @@ exposures: {
         tables:      raw_skytile
     }
     deepCoadd_calexp: {
-        template:      "deepCoadd-results/%(filter)s/%(tract)d/%(patch)s/calexp-%(filter)s-%(tract)d-%(patch)s.fits"
+        template:      "deepCoadd/%(filter)s/%(tract)d/%(patch)s/calexp-%(filter)s-%(tract)d-%(patch)s.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:   "ExposureF"
         storage:       "FitsStorage"
