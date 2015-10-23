@@ -1207,6 +1207,22 @@ datasets: {
         persistable:   "SourceCatalog"
         storage:       "FitsCatalogStorage"
     }
+    deepCoadd_measMatch: {
+        template:      "deepCoadd-results/%(filter)s/%(tract)d/%(patch)s/measMatch-%(filter)s-%(tract)d-%(patch)s.fits"
+        python:        "lsst.afw.table.BaseCatalog"
+        persistable:   "BaseCatalog"
+        storage:       "FitsCatalogStorage"
+        tables:        "raw"
+        tables:        "raw_visit"
+    }
+    deepCoadd_measMatchFull: {
+        template:      "deepCoadd-results/%(filter)s/%(tract)d/%(patch)s/measMatchFull-%(filter)s-%(tract)d-%(patch)s.fits"
+        python:        "lsst.afw.table.BaseCatalog"
+        persistable:   "BaseCatalog"
+        storage:       "FitsCatalogStorage"
+        tables:        "raw"
+        tables:        "raw_visit"
+    }
 
     # Reference catalog for coadds
     deepCoadd_ref: {
