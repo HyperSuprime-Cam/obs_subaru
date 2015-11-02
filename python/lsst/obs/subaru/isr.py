@@ -164,7 +164,7 @@ after applying the nominal gain
     thumbnailSatBorder = Field(dtype=int, default=2, doc="Border around saturated pixels for thumbnail")
     doBrighterFatter = pexConfig.Field(
         dtype = bool,
-        default = False,
+        default = True,
         doc = "Apply the brighter fatter correction"
         )
     brighterFatterKernelFile = pexConfig.Field(
