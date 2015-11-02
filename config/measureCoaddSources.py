@@ -3,6 +3,7 @@ root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'aper
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron.py'))
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'cmodel.py'))
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsm.py'))
+root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'classifiers.py'))
 
 root.measurement.algorithms["flags.pixel"].any.append("CLIPPED")
 #

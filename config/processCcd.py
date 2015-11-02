@@ -64,6 +64,7 @@ root.calibrate.measureCurveOfGrowth.nAperture = 8 # 35 pixels is sufficient and 
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'apertures.py'))
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'kron.py'))
 root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'hsm.py'))
+root.measurement.load(os.path.join(os.environ['OBS_SUBARU_DIR'], 'config', 'classifiers.py'))
 # Note no CModel: it's slow.
 
 # Enable deblender for processCcd

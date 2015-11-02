@@ -4,5 +4,6 @@ import os
 try:
     root.load(os.path.join(os.environ['MEAS_MULTIFIT_DIR'], 'config', 'enable.py'))
     root.algorithms['classification.extendedness'].fluxRatio = 0.985
+    root.algorithms["classification.moments"].flux = "cmodel.flux"
 except KeyError, ImportError:
     print "Cannot import lsst.meas.multifit: disabling CModel measurements"

@@ -5,5 +5,6 @@ try:
     root.load(os.path.join(os.environ['MEAS_EXTENSIONS_SHAPEHSM_DIR'], 'config', 'enable.py'))
     root.algorithms["shape.hsm.regauss"].deblendNChild = "deblend.nchild"
     root.slots.shape = "shape.hsm.moments"
+    root.algorithms["classification.moments"].useSdssBeforeHsm = False
 except Exception as e:
     print "Cannot enable shapeHSM (%s): disabling HSM shape measurements" % (e,)
