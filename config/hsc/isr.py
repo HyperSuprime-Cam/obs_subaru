@@ -14,7 +14,6 @@ root.isr.fringe.filters = ['y', 'N921']
 root.isr.doWrite = False
 root.isr.doCrosstalk = True
 root.isr.doGuider = False
-root.isr.doBrighterFatter = False
 root.isr.brighterFatterKernelFile = os.path.join(os.environ["OBS_SUBARU_DIR"], "hsc",
                                                  "brighter_fatter_kernel.pkl")
 
