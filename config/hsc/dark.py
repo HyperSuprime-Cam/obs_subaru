@@ -8,3 +8,5 @@ root.isr.doBias = True
 root.repair.cosmicray.nCrPixelMax = 1000000
 root.repair.cosmicray.minSigma = 5.0
 root.repair.cosmicray.min_DN = 50.0
+
+root.isr.doBrighterFatter = False
