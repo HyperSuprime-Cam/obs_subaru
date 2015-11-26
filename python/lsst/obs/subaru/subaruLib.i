@@ -19,6 +19,7 @@ Interface class for subaru crosstalk correction
 //#include "lsst/afw/geom/Extent.h"
 #include "lsst/afw/cameraGeom.h"
 #include "lsst/afw/image.h"
+#include "lsst/afw/geom/polygon.h"
 #include "lsst/afw/image/MaskedImage.h"
 #include "lsst/obs/subaru/Crosstalk.h"
 %}
