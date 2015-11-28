@@ -123,7 +123,7 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
                 nextDate = dates[i+1]
                 #print "Adjusting: %d %s --> %s : %s vs %s" % (i, date, nextDate, valids[date][1], midpoint)
                 valids[nextDate][0] = midpoint
-                valids[date][1] = midpoint
+                valids[date][1] = midpoint - datetime.timedelta(1)
         del midpoints
         del dates
 
