@@ -6,7 +6,6 @@ root.fluxFitOrder = 7
 root.fluxFitAbsolute = True
 root.internalFitting = True
 root.commonFluxCorr = False
-root.minNumMatch = 5
 root.fluxFitSolveCcd = True
 
 root.astrom.load(os.path.join(os.environ["OBS_SUBARU_DIR"], "config", "hsc", "filterMap.py"))
