@@ -9,5 +9,7 @@ root.measurement.algorithms.names -= ["flux.gaussian"]
 root.measurement.slots.instFlux = None
 
 root.measurement.algorithms.names |= ["countInputs", "variance"]
-root.measurement.algorithms["flags.pixel"].any = ["CLIPPED"]
+root.measurement.algorithms["flags.pixel"].any.append("CLIPPED")
 
+root.measurement.algorithms["flags.pixel"].center.append("BRIGHT_OBJECT")
+root.measurement.algorithms["flags.pixel"].any.append("BRIGHT_OBJECT")

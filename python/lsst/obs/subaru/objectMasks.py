@@ -21,6 +21,9 @@ class ObjectMaskCatalog(object):
         self.table  = self._catalog.table
         self.addNew = self._catalog.addNew
 
+    def __len__(self):
+        return len(self._catalog)
+
     def __iter__(self):
         return iter(self._catalog)
 
@@ -81,7 +84,7 @@ class ObjectMaskCatalog(object):
 
                 mat = re.search(r"^\s*circle(?:\s+|\s*\(\s*)"
                                 "(\d+(?:\.\d*)([d]*))" "(?:\s+|\s*,\s*)"
-                                "(\d+(?:\.\d*)([d]*))" "(?:\s+|\s*,\s*)"
+                                "([+-]?\d+(?:\.\d*)([d]*))" "(?:\s+|\s*,\s*)"
                                 "(\d+(?:\.\d*))([d'\"]*)" "(?:\s*|\s*\)\s*)"
                                 "\s*#\s*ID:\s*(\d+)" "\s*$"
                                 , line)

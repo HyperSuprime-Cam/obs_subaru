@@ -8,10 +8,10 @@ root.measurement.algorithms["flags.pixel"].any.append("CLIPPED")
 #
 # This isn't good!  There appears to be no way to configure the flags.pixel measurement
 # algorithm based on a configuration parameter; see HSC-1342 for a discussion.  The name
-# BRIGHT_MASK must match assembleCoaddConfig.brightObjectMaskName
+# BRIGHT_OBJECT must match assembleCoaddConfig.brightObjectMaskName
 #
-root.measurement.algorithms["flags.pixel"].center.append("BRIGHT_MASK")
-root.measurement.algorithms["flags.pixel"].any.append("BRIGHT_MASK")
+root.measurement.algorithms["flags.pixel"].center.append("BRIGHT_OBJECT")
+root.measurement.algorithms["flags.pixel"].any.append("BRIGHT_OBJECT")
 
 root.measurement.algorithms.names |= ["countInputs"]
 
