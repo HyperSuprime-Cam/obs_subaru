@@ -251,6 +251,12 @@ class HscParseTask(ParseTask):
 
     def translate_visit(self, md):
         expId = md.get("EXP-ID").strip()
+        m = re.search("^HSCE(\d{8})$", expId)  # 2016-06-14 and new scheme
+        if m is not None:
+            visit = m.groups()[0]
+            visit = int(visit)
+            return visit
+
         m = re.search("^HSC([A-Z])(\d{6})00$", expId)
         if not m:
             raise RuntimeError("Unable to interpret EXP-ID: %s" % expId)
