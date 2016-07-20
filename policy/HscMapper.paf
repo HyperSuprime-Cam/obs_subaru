@@ -1267,4 +1267,18 @@ datasets: {
         persistable:   "PurePythonClass"
         storage:       "FitsCatalogStorage"
     }
+
+    deepCoadd_afterburner: {
+        template:      "deepCoadd-results/%(filter)s/%(tract)d/%(patch)s/ab-%(tract)d-%(patch)s-%(filter)s.fits"
+        python:        "lsst.afw.table.SourceCatalog"
+        persistable:   "SourceCatalog"
+        storage:       "FitsCatalogStorage"
+    }
+    deepCoadd_afterburnerApCorr: {
+        template:      "deepCoadd-results/%(filter)s/%(tract)d/%(patch)s/abApCorr-%(tract)d-%(patch)s-%(filter)s.fits"
+        python:        "lsst.afw.image.ApCorrMap"
+        persistable:   "ApCorrMap"
+        storage:       "FitsCatalogStorage"
+    }
+
 }
