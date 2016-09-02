@@ -13,6 +13,7 @@ root.library = {
     "sdss*": ColortermGroupConfig.fromValues(
         {'g': ColortermConfig.fromValues("g", "r", -0.00816446, -0.08366937, -0.00726883),
          'r': ColortermConfig.fromValues("r", "i",  0.00231810,  0.01284177, -0.03068248),
+         'r2': ColortermConfig.fromValues("r", "i", 0.00074087, -0.00830543, -0.02848420),
          'i': ColortermConfig.fromValues("i", "z",  0.00130204, -0.16922042, -0.01374245),
          'i2': ColortermConfig.fromValues("i", "z",  0.00124676, -0.20739606, -0.01067212),
          'z': ColortermConfig.fromValues("z", "i", -0.00680620,  0.01353969,  0.01479369),
@@ -23,6 +24,7 @@ root.library = {
     "ps1*": ColortermGroupConfig.fromValues(
         {'g': ColortermConfig.fromValues("g", "r",  0.00730066,  0.06508481, -0.01510570),
          'r': ColortermConfig.fromValues("r", "i",  0.00279757,  0.02093734, -0.01877566),
+         'r2': ColortermConfig.fromValues("r", "i", 0.00117690,  0.00003996, -0.01667794),
          'i': ColortermConfig.fromValues("i", "z",  0.00166891, -0.13944659, -0.03034094),
          'i2': ColortermConfig.fromValues("i", "z",  0.00180361, -0.18483562, -0.02675511),
          'z': ColortermConfig.fromValues("z", "y", -0.00907517, -0.28840221, -0.00316369),
