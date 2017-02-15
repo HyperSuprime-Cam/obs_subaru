@@ -47,6 +47,7 @@ menu = {"ps1*": {}, # Defaults are fine
         "2mass*": {"photoRefObjLoader.filterMap": {ff: "J" for ff in "grizy"},
                    "astromRefObjLoader.filterMap": {ff: "J" for ff in "grizy"}}, # No optical, use J instead
         "10*": {}, # Match the empty astrometry_net_data version for use without a ref catalog
+        "8*": {},  # Ditto
         }
 setConfigFromEups(config.calibrate.photoCal, config.calibrate, menu)
 
