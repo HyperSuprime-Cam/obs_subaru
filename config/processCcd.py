@@ -38,18 +38,31 @@ for refObjLoader in (config.calibrate.astromRefObjLoader,
 config.charImage.catalogCalculation.plugins['base_ClassificationExtendedness'].fluxRatio = 0.95
 config.calibrate.catalogCalculation.plugins['base_ClassificationExtendedness'].fluxRatio = 0.95
 
-config.calibrate.photoCal.applyColorTerms = True
+# Improves astrometric matching
+config.calibrate.astrometry.matcher.numBrightStars = 150
+config.calibrate.photoCal.matcher.numBrightStars = 150
 
-from lsst.pipe.tasks.setConfigFromEups import setConfigFromEups
-menu = {"ps1*": {}, # Defaults are fine
-        "sdss*": {"photoRefObjLoader.filterMap": {"y": "z"},
-                  "astromRefObjLoader.filterMap": {"y": "z"}}, # No y-band, use z instead
-        "2mass*": {"photoRefObjLoader.filterMap": {ff: "J" for ff in "grizy"},
-                   "astromRefObjLoader.filterMap": {ff: "J" for ff in "grizy"}}, # No optical, use J instead
-        "10*": {}, # Match the empty astrometry_net_data version for use without a ref catalog
-        "8*": {},  # Ditto
-        }
-setConfigFromEups(config.calibrate.photoCal, config.calibrate, menu)
+# Reference catalogs
+useLsstFormat = True  # Use LSST format catalogs?
+if useLsstFormat:
+    config.calibrate.photoCal.applyColorTerms = True
+    from lsst.meas.algorithms import LoadIndexedReferenceObjectsTask
+    config.calibrate.astromRefObjLoader.retarget(LoadIndexedReferenceObjectsTask)
+    config.calibrate.astromRefObjLoader.ref_dataset_name = "ps1_pv3_3pi_20170110"
+    config.calibrate.photoRefObjLoader.retarget(LoadIndexedReferenceObjectsTask)
+    config.calibrate.photoRefObjLoader.ref_dataset_name = "ps1_pv3_3pi_20170110"
+    config.calibrate.photoCal.photoCatName = "ps1_pv3_3pi_20170110"
+else:
+    from lsst.pipe.tasks.setConfigFromEups import setConfigFromEups
+    menu = {"ps1*": {}, # Defaults are fine
+            "sdss*": {"photoRefObjLoader.filterMap": {"y": "z"},
+                      "astromRefObjLoader.filterMap": {"y": "z"}}, # No y-band, use z instead
+            "2mass*": {"photoRefObjLoader.filterMap": {ff: "J" for ff in "grizy"},
+                       "astromRefObjLoader.filterMap": {ff: "J" for ff in "grizy"}}, # No optical, use J instead
+            "10*": {}, # Match the empty astrometry_net_data version for use without a ref catalog
+            "8*": {},  # Ditto
+            }
+    setConfigFromEups(config.calibrate.photoCal, config.calibrate, menu)
 
 # Demand astrometry and photoCal succeed
 config.calibrate.requireAstrometry = True
