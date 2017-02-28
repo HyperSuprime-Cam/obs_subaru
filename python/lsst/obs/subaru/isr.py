@@ -279,7 +279,7 @@ class SubaruIsrTask(IsrTask):
             self.biasCorrection(ccdExposure, biasExposure)
         if self.config.doVariance:
             for amp in ccd:
-                ampExposure = ccdExposure.Factory(ccdExposure, amp.getRawDataBBox(), afwImage.PARENT)
+                ampExposure = ccdExposure.Factory(ccdExposure, amp.getBBox(), afwImage.PARENT)
                 self.updateVariance(ampExposure, amp)
         if self.doLinearize(ccd):
             # immediate=True required for functors and linearizers are functors; see ticket DM-6515
