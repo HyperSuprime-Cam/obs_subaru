@@ -554,4 +554,11 @@ datasets: {
         tables:        raw
         tables:        raw_visit
     }
+
+    # For "Arcturus" version of bright star masks from Jean Coupon,
+    # which have different names than the standard.
+    brightObjectMask: {
+        template: deepCoadd/BrightObjectMasks/%(tract)d/BrightStarMask-%(tract)d-%(patch)s-%(filter)s.reg
+    }
+
 }
