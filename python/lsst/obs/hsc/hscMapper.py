@@ -17,6 +17,8 @@ class HscMapper(CameraMapper):
 
     MakeRawVisitInfoClass = MakeHscRawVisitInfo
 
+    _cameraCache = None  # Camera object, cached to speed up instantiation time
+
     def __init__(self, **kwargs):
         policyFile = pexPolicy.DefaultPolicyFile("obs_subaru", "HscMapper.paf", "policy")
         policy = pexPolicy.Policy(policyFile)
@@ -144,6 +146,26 @@ class HscMapper(CameraMapper):
         if len(afwImage.Filter.getNames()) >= 2**HscMapper._nbit_filter:
             raise RuntimeError("You have more filters defined than fit into the %d bits allocated" %
                                HscMapper._nbit_filter)
+
+    def _makeCamera(self, *args, **kwargs):
+        """Make the camera object
+
+        This implementation layers a cache over the parent class'
+        implementation. Caching the camera improves the instantiation
+        time for the HscMapper because parsing the camera's Config
+        involves a lot of 'stat' calls (through the tracebacks).
+        """
+        if not self._cameraCache:
+            self._cameraCache = CameraMapper._makeCamera(self, *args, **kwargs)
+        return self._cameraCache
+
+    @classmethod
+    def clearCache(cls):
+        """Clear the camera cache
+
+        This is principally intended to help memory leak tests pass.
+        """
+        cls._cameraCache = None
 
     def map(self, datasetType, dataId, write=False):
         """Need to strip 'flags' argument from map
