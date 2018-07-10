@@ -642,3 +642,21 @@ datasets:
   qaTableVisit:
     template: plots/%(filter)s/tract-%(tract)d/visit-%(visit)d/%(description)s.parq
 
+  # s18a afterburner: convolved measurements of undeblended sources
+  deepCoadd_forced_src_undeblendedConvolved:
+    persistable: ignored
+    storage: FitsCatalogStorage
+    python: lsst.afw.table.SourceCatalog
+    template: deepCoadd-results/%(filter)s/%(tract)d/%(patch)s/forced_src_undeblendedConvolved-%(filter)s-%(tract)d-%(patch)s.fits
+  undeblendedConvolved_config:
+    template: config/undeblendedConvolved.py
+    persistable: Config
+    python: hsc.pipe.s18a.undeblendedConvolved.UndeblendedConvolvedConfig
+    storage: ConfigStorage
+    tables: raw
+  undeblendedConvolvedDriver_config:
+    template: config/undeblendedConvolvedDriver.py
+    persistable: Config
+    python: hsc.pipe.s18a.undeblendedConvolved.UndeblendedConvolvedDriverConfig
+    storage: ConfigStorage
+    tables: raw
