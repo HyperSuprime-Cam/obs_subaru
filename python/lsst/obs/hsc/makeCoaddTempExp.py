@@ -59,7 +59,7 @@ class SubaruMakeCoaddTempExpTask(MakeCoaddTempExpTask):
         Exposure's own PhotoCalib and have the original SkyWcs.
         """
         try:
-            exposure = dataRef.get(self.calexpType, immediate=True)
+            exposure = dataRef.get("calexp", immediate=True)
         except dafPersist.NoResults as e:
             raise MissingExposureError('Exposure not found: %s ' % str(e)) from e
 
