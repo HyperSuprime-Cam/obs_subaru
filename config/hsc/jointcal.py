@@ -7,3 +7,6 @@ config.astrometryRefObjLoader.load(filterMapFile)
 config.applyColorTerms = True
 
 config.colorterms.load(os.path.join(getPackageDir("obs_subaru"), "config", "hsc", "colorterms.py"))
+
+# Exclusive settings for HSC fork
+config.doPhotometry = False

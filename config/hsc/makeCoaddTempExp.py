@@ -7,3 +7,6 @@ config.load(os.path.join(getPackageDir("obs_subaru"), "config", "hsc", "coaddBas
 config.doApplySkyCorr = True
 config.warpAndPsfMatch.warp.warpingKernelName = 'lanczos5'
 config.coaddPsf.warpingKernelName = 'lanczos5'
+
+# Exclusive settings for HSC fork
+config.externalPhotoCalibName = "fgcm_tract"
